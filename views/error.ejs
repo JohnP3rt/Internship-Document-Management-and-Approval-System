@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h3 class="card-title text-danger">Error</h3>
+                    <p class="card-text"><%= message %></p>
+                    <% if (error.stack && process.env.NODE_ENV === 'development') { %>
+                        <pre class="text-left"><%= error.stack %></pre>
+                    <% } %>
+                    <a href="javascript:history.back()" class="btn btn-primary">Go Back</a>
+                    <a href="/" class="btn btn-secondary">Go Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

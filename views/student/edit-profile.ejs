@@ -1,0 +1,145 @@
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Edit Profile</h3>
+                
+                <form action="/student/edit-profile" method="POST" enctype="multipart/form-data">
+                    <!-- Remove CSRF token line since it's not implemented -->
+                    
+                    <!-- Profile Picture Section -->
+                    <div class="text-center mb-4">
+                        <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>" 
+                             class="rounded-circle profile-picture mb-3" 
+                             style="width: 150px; height: 150px; object-fit: cover;" 
+                             id="profilePreview">
+                        <div>
+                            <label class="btn btn-outline-primary">
+                                Change Photo
+                                <input type="file" name="profilePicture" 
+                                       accept="image/jpeg,image/png"
+                                       style="display: none;"
+                                       onchange="previewImage(this)">
+                            </label>
+                            <small class="d-block text-muted mt-1">Maximum file size: 10MB</small>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Surname</label>
+                            <input type="text" name="surname" class="form-control" 
+                                   value="<%= profile.personalData.surname %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Given Name</label>
+                            <input type="text" name="givenName" class="form-control" 
+                                   value="<%= profile.personalData.givenName %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" name="middleName" class="form-control" 
+                                   value="<%= profile.personalData.middleName %>">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="dateOfBirth" class="form-control" 
+                                   value="<%= profile.personalData.dateOfBirth?.toISOString().split('T')[0] %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Civil Status</label>
+                            <select name="civilStatus" class="form-select" required>
+                                <option value="">Select status...</option>
+                                <% ['Single', 'Married', 'Widowed', 'Separated'].forEach(status => { %>
+                                    <option value="<%= status %>" 
+                                        <%= profile.personalData.civilStatus === status ? 'selected' : '' %>>
+                                        <%= status %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sex</label>
+                            <select name="sex" class="form-select" required>
+                                <option value="">Select sex...</option>
+                                <% ['Male', 'Female'].forEach(sex => { %>
+                                    <option value="<%= sex %>"
+                                        <%= profile.personalData.sex === sex ? 'selected' : '' %>>
+                                        <%= sex %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <!-- Academic Information -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Course</label>
+                            <input type="text" name="course" class="form-control" 
+                                   value="<%= profile.personalData.course %>" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Major</label>
+                            <input type="text" name="major" class="form-control" 
+                                   value="<%= profile.personalData.major %>">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Year & Section</label>
+                            <input type="text" name="yearSection" class="form-control" 
+                                   value="<%= profile.personalData.yearSection %>" required>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contact Number</label>
+                            <input type="text" name="contactNumber" class="form-control" 
+                                   value="<%= profile.personalData.contactNumber %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Parent/Guardian Name</label>
+                            <input type="text" name="guardianName" class="form-control" 
+                                   value="<%= profile.personalData.guardianName %>" required>
+                        </div>
+
+                        <!-- Addresses -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Home Address</label>
+                            <textarea name="homeAddress" class="form-control" rows="2" 
+                                    required><%= profile.personalData.homeAddress %></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Current Address</label>
+                            <textarea name="currentAddress" class="form-control" rows="2" 
+                                    required><%= profile.personalData.currentAddress %></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="/student/dashboard" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        // Check file size
+        const fileSize = input.files[0].size / 1024 / 1024; // in MB
+        if (fileSize > 10) {
+            alert('File size exceeds 10MB. Please choose a smaller file.');
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profilePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

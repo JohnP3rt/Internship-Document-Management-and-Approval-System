@@ -1,0 +1,169 @@
+<div class="d-flex">
+    <!-- Left Navigation - Fixed Position -->
+    <div class="sidebar bg-light border-end" style="width: 280px; height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto;">
+        <div class="p-3 border-bottom">
+            <div class="text-center mb-3">
+                <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>" 
+                     class="rounded-circle" style="width: 80px; height: 80px;" alt="Profile">
+                <h6 class="mt-2 mb-0"><%= profile.personalData.givenName %> <%= profile.personalData.surname %></h6>
+                <small class="text-muted"><%= profile.personalData.studentId %></small>
+                <div class="mt-2">
+                    <a href="/student/edit-profile" class="btn btn-sm btn-outline-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav flex-column nav-pills p-3">
+            <a class="nav-link active" href="#documents" data-bs-toggle="pill">My Documents & Records</a>
+            <a class="nav-link" href="#announcements" data-bs-toggle="pill">Announcements</a>
+        </div>
+    </div>
+
+    <!-- Main Content - Add padding for fixed sidebar -->
+    <div class="main-content" style="margin-left: 280px; width: calc(100% - 280px); min-height: 100vh;">
+        <div class="container py-4">
+            <div class="tab-content">
+                <!-- Documents Tab -->
+                <div class="tab-pane fade show active" id="documents">
+                    <h4 class="mb-4">Required Documents</h4>
+                    
+                    <!-- Pre-Deployment Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Pre-Deployment Documents</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="document-list">
+                                <% const preDeploymentDocs = [
+                                    { label: 'Record File', value: 'record_file' },
+                                    { label: 'Application Letter', value: 'application_letter' },
+                                    { label: 'Medical Certificate', value: 'medical_certificate' },
+                                    { label: 'Psychological Test', value: 'psychological_test' },
+                                    { label: 'Certification of Units', value: 'certification_units' },
+                                    { label: 'Resume/CV', value: 'resume' },
+                                    { label: 'Consent Form', value: 'consent_form' },
+                                    { label: 'Endorsement Letter', value: 'endorsement_letter' },
+                                    { label: 'Internship Waiver', value: 'internship_waiver' }
+                                ] %>
+                                
+                                <% preDeploymentDocs.forEach(doc => { 
+                                    const existingDoc = profile.documents.find(d => d.docType === doc.value);
+                                %>
+                                    <div class="document-item d-flex align-items-center p-2 border-bottom">
+                                        <div class="form-check me-3">
+                                            <input type="checkbox" class="form-check-input" 
+                                                <%= existingDoc && existingDoc.status !== 'Not Submitted' ? 'checked' : '' %>>
+                                        </div>
+                                        <label class="btn btn-sm btn-outline-primary me-3">
+                                            <i class="bi bi-upload"></i> Upload
+                                            <input type="file" 
+                                                   data-doc-type="<%= doc.value %>"
+                                                   style="display: none;"
+                                                   class="document-upload"
+                                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                        </label>
+                                        <span class="flex-grow-1"><%= doc.label %></span>
+                                        <span class="badge <%= existingDoc ? 
+                                            (existingDoc.status === 'Approved' ? 'bg-success' : 
+                                             existingDoc.status === 'Rejected' ? 'bg-danger' : 'bg-warning') 
+                                            : 'bg-secondary' %>">
+                                            <%= existingDoc ? existingDoc.status : 'Not Submitted' %>
+                                        </span>
+                                    </div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upon Approval Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Upon Company Approval</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Similar structure as Pre-Deployment -->
+                        </div>
+                    </div>
+
+                    <!-- Post-OJT Section -->
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Post-OJT Requirements</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Similar structure as Pre-Deployment -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements Tab -->
+                <div class="tab-pane fade" id="announcements">
+                    <h4 class="mb-4">Announcements</h4>
+                    <div class="announcements-list">
+                        <% if (announcements && announcements.length > 0) { %>
+                            <% announcements.forEach(announcement => { %>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <img src="<%= announcement.author.profilePicture || '/images/default-avatar.png' %>" 
+                                                 class="rounded-circle me-2" 
+                                                 style="width: 40px; height: 40px; object-fit: cover;">
+                                            <div>
+                                                <h5 class="card-title mb-0"><%= announcement.title %></h5>
+                                                <small class="text-muted">Posted by <%= announcement.author.name || 'Coordinator' %></small>
+                                            </div>
+                                        </div>
+                                        <p class="card-text"><%= announcement.content %></p>
+                                        <small class="text-muted">
+                                            Posted on <%= new Date(announcement.createdAt).toLocaleString() %>
+                                        </small>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-muted">No announcements yet.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (typeof profile === 'undefined' || !profile) { %>
+  <div class="alert alert-danger">
+    Error: Student profile not found. Please contact an administrator.
+  </div>
+<% } else { %>
+  <!-- ...existing profile display code... -->
+<% } %>
+
+<script>
+document.querySelectorAll('.document-upload').forEach(input => {
+    input.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('docType', e.target.dataset.docType);
+
+            const response = await fetch('/student/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert(result.error || 'Upload failed. Please try again.');
+            }
+        } catch (err) {
+            console.error('Upload error:', err);
+            alert('Upload failed. Please try again.');
+        }
+    });
+});
+</script>

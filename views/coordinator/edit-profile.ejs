@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Edit Coordinator Profile</h3>
+                    
+                    <form action="/coordinator/edit-profile" method="POST" enctype="multipart/form-data">
+                        <div class="text-center mb-4">
+                            <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" 
+                                 class="rounded-circle profile-picture mb-3" 
+                                 style="width: 150px; height: 150px; object-fit: cover;" 
+                                 id="profilePreview">
+                            <div>
+                                <label class="btn btn-outline-primary">
+                                    Change Photo
+                                    <input type="file" name="profilePicture" 
+                                           accept="image/jpeg,image/png"
+                                           style="display: none;"
+                                           onchange="previewImage(this)">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name" class="form-control" 
+                                   value="<%= user.name %>" required
+                                   placeholder="Enter your full name">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="/coordinator/dashboard" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profilePreview').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
