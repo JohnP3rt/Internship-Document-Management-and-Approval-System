@@ -1,0 +1,47 @@
+<div class="row justify-content-center min-vh-100 align-items-center">
+    <div class="col-md-5">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">Log in</h2>
+                
+                <!-- <div class="text-center mb-4">
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="roleSelect" id="student" value="student" checked>
+                        <label class="btn btn-outline-primary" for="student">Student</label>
+
+                        <input type="radio" class="btn-check" name="roleSelect" id="coordinator" value="coordinator">
+                        <label class="btn btn-outline-primary" for="coordinator">Coordinator</label>
+
+                        <input type="radio" class="btn-check" name="roleSelect" id="director" value="director">
+                        <label class="btn btn-outline-primary" for="director">Director</label>
+                    </div>
+                </div> -->
+
+                <form id="loginForm">
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
+                        <label for="email">PSU Email</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Log in</button>
+                    
+                    <div id="studentRegister" class="text-center">
+                        <p class="mb-0">Just starting? <a href="/register">Apply for account</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <script>
+document.querySelectorAll('input[name="roleSelect"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        const studentRegister = document.getElementById('studentRegister');
+        studentRegister.style.display = e.target.value === 'student' ? 'block' : 'none';
+    });
+});
+</script> -->
