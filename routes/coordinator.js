@@ -191,9 +191,13 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             .populate('author', 'name profilePicture')
             .sort({ createdAt: -1 });
 
+        // Fetch coordinators so the view has the `coordinators` variable
+        const coordinators = await User.find({ role: 'coordinator' }).select('email name status');
+
         res.render('coordinator/dashboard', { 
           pendingStudents,
           activeStudents,
+          coordinators,
           announcements,
           error: req.query.error,
           message: req.query.message,
@@ -203,6 +207,28 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
         console.error('Dashboard Error:', err);
         res.redirect('/?error=Error loading dashboard');
     }
+});
+
+// DELETE /api/coordinator/:id - allow deleting coordinator accounts (protected)
+router.delete('/:id', auth('coordinator'), async (req, res) => {
+  try {
+    const targetId = req.params.id;
+    // prevent deleting self
+    if (req.user._id.toString() === targetId) {
+      return res.status(400).json({ error: 'Cannot delete your own account' });
+    }
+
+    const user = await User.findById(targetId);
+    if (!user || user.role !== 'coordinator') {
+      return res.status(404).json({ error: 'Coordinator not found' });
+    }
+
+    await user.remove();
+    res.json({ message: 'Coordinator deleted' });
+  } catch (err) {
+    console.error('Delete coordinator error:', err);
+    res.status(500).json({ error: 'Failed to delete coordinator' });
+  }
 });
 
 module.exports = router;

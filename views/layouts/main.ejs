@@ -8,10 +8,10 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="/">OJT System</a>
+            <a class="navbar-brand" href="/"></a>
             <% if (locals.user) { %>
                 <div class="navbar-nav">
-                    <a class="nav-link" href="/<%= user.role %>/dashboard">Dashboard</a>
+                    <!-- <a class="nav-link" href="/<%= user.role %>/dashboard">Dashboard</a> -->
                     <a class="nav-link logout-link" href="#" onclick="handleLogout(event)">Logout</a>
                 </div>
             <% } %>
