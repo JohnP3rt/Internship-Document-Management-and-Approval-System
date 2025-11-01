@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User, StudentProfile, Announcement } = require('../models');
+const { User, StudentProfile, Announcement, Comment } = require('../models');
 const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
 const path = require('path');
@@ -39,17 +39,48 @@ const profileUpload = multer({
     }
 }).single('profilePicture');
 
+// Add announcement image storage config
+const announcementStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        const dir = path.join(__dirname, '..', 'uploads', 'announcements');
+        fs.mkdirSync(dir, { recursive: true });
+        cb(null, dir);
+    },
+    filename: function(req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'announcement-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const announcementUpload = multer({
+    storage: announcementStorage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only images are allowed'));
+        }
+    }
+}).single('image');
+
 router.post('/create-coordinator', auth('coordinator'), async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({
-    email,
-    password: hash,
-    role: 'coordinator',
-    status: 'active'
-  });
-  res.json({ message: 'Coordinator created', userId: user._id });
+  const { email, password, name } = req.body;
+  if (!email || !password || !name) return res.status(400).json({ error: 'Missing fields' });
+  
+  try {
+    const hash = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      email,
+      password: hash,
+      name, // Add name field
+      role: 'coordinator',
+      status: 'active'
+    });
+    res.json({ message: 'Coordinator created', userId: user._id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 router.get('/pending-students', auth('coordinator'), async (req, res) => {
@@ -173,6 +204,7 @@ router.post('/edit-profile', auth('coordinator'), async (req, res) => {
     });
 });
 
+// Update the dashboard route to properly populate comments and their authors
 router.get('/dashboard', auth('coordinator'), async (req, res) => {
     try {
         const pendingStudents = await User.find({ role: 'student', status: 'pending' })
@@ -187,9 +219,66 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             select: 'personalData documents overallStatus'
           });
 
-        const announcements = await Announcement.find()
-            .populate('author', 'name profilePicture')
+        // Update the dashboard announcements population to include author.studentProfile.personalData
+        let announcements = await Announcement.find()
+            .populate({
+                path: 'author',
+                select: 'name profilePicture email studentProfile',
+                populate: { path: 'studentProfile', select: 'personalData' }
+            })
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'name profilePicture email studentProfile',
+                    populate: { path: 'studentProfile', select: 'personalData' }
+                },
+                options: { sort: { createdAt: -1 } }
+            })
             .sort({ createdAt: -1 });
+
+        // Normalize author info asynchronously, fetch StudentProfile if author.studentProfile not present
+        for (let i = 0; i < announcements.length; i++) {
+            const aDoc = announcements[i];
+            const a = aDoc.toObject ? aDoc.toObject() : aDoc;
+
+            // announcement author
+            let auth = a.author || {};
+            let pd = auth.studentProfile?.personalData;
+
+            // if author.studentProfile missing, try to load it
+            if (!pd && auth._id) {
+                const sp = await StudentProfile.findOne({ user: auth._id }).lean();
+                pd = sp?.personalData;
+            }
+
+            const builtName = auth.name || (pd ? [pd.givenName || pd.firstName, pd.middleName, pd.surname || pd.lastName].filter(Boolean).join(' ') : undefined);
+            auth.name = builtName || auth.email || 'User';
+            auth.profilePicture = auth.profilePicture || pd?.profilePicture || '/images/default-avatar.png';
+            a.author = auth;
+
+            // comments authors
+            const comments = a.comments || [];
+            for (let j = 0; j < comments.length; j++) {
+                const comm = comments[j];
+                let cAuth = comm.author || {};
+                let cpd = cAuth.studentProfile?.personalData;
+
+                if (!cpd && cAuth._id) {
+                    const spc = await StudentProfile.findOne({ user: cAuth._id }).lean();
+                    cpd = spc?.personalData;
+                }
+
+                const cBuiltName = cAuth.name || (cpd ? [cpd.givenName || cpd.firstName, cpd.middleName, cpd.surname || cpd.lastName].filter(Boolean).join(' ') : undefined);
+                cAuth.name = cBuiltName || cAuth.email || 'User';
+                cAuth.profilePicture = cAuth.profilePicture || cpd?.profilePicture || '/images/default-avatar.png';
+                comm.author = cAuth;
+                comments[j] = comm;
+            }
+
+            a.comments = comments;
+            announcements[i] = a;
+        }
 
         // Fetch coordinators so the view has the `coordinators` variable
         const coordinators = await User.find({ role: 'coordinator' }).select('email name status');
@@ -206,6 +295,142 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
     } catch (err) {
         console.error('Dashboard Error:', err);
         res.redirect('/?error=Error loading dashboard');
+    }
+});
+
+// Create announcement with image
+router.post('/announcement', auth('coordinator'), (req, res) => {
+    announcementUpload(req, res, async (err) => {
+        try {
+            if (err) {
+                return res.status(400).json({ error: err.message });
+            }
+
+            const announcement = new Announcement({
+                title: req.body.title,
+                content: req.body.content,
+                author: req.user._id,
+                imageUrl: req.file ? `/uploads/announcements/${req.file.filename}` : undefined
+            });
+
+            await announcement.save();
+            res.json(announcement);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
+});
+
+// Update the comment route to properly populate author data
+router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async (req, res) => {
+    try {
+        const { content } = req.body;
+        const announcementId = req.params.id;
+
+        const comment = new Comment({
+            content,
+            author: req.user._id,
+            announcement: announcementId,
+            createdAt: new Date()
+        });
+
+        await comment.save();
+
+        const announcement = await Announcement.findById(announcementId);
+        announcement.comments.push(comment._id);
+        await announcement.save();
+
+        // Fully populate the comment with author details including studentProfile
+        const populatedComment = await Comment.findById(comment._id)
+            .populate({
+                path: 'author',
+                select: 'name profilePicture email studentProfile',
+                populate: { path: 'studentProfile', select: 'personalData' }
+            })
+            .lean();
+
+        const authorObj = populatedComment.author || {};
+        // build full name from stored fields if user.name missing
+        let fullName = authorObj.name;
+        const pd = authorObj.studentProfile?.personalData;
+        if (!fullName && pd) {
+            const parts = [
+                pd.givenName || pd.firstName,
+                pd.middleName,
+                pd.surname || pd.lastName
+            ].filter(Boolean);
+            fullName = parts.join(' ');
+        }
+        const profilePic = authorObj.profilePicture || pd?.profilePicture || '/images/default-avatar.png';
+
+        const createdAt = populatedComment.createdAt ? new Date(populatedComment.createdAt) : new Date();
+        const createdAtShort = createdAt.toLocaleString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: 'numeric', minute: '2-digit'
+        });
+
+        res.json({
+            ...populatedComment,
+            author: {
+                name: fullName || authorObj.email,
+                profilePicture: profilePic,
+                email: authorObj.email
+            },
+            createdAt: createdAt.toISOString(),
+            createdAtShort
+        });
+    } catch (err) {
+        console.error('Comment creation error:', err);
+        res.status(500).json({ error: 'Failed to create comment' });
+    }
+});
+
+// Add new route for document comments
+router.post('/document-comment/:docId', auth('coordinator'), async (req, res) => {
+    try {
+        const profile = await StudentProfile.findOne({ 'documents._id': req.params.docId });
+        if (!profile) {
+            return res.status(404).json({ error: 'Document not found' });
+        }
+
+        const doc = profile.documents.id(req.params.docId);
+        doc.comments = req.body.comment;
+        await profile.save();
+
+        res.json({ 
+            message: 'Comment added successfully',
+            comments: doc.comments
+        });
+    } catch (err) {
+        console.error('Add comment error:', err);
+        res.status(500).json({ error: 'Failed to add comment' });
+    }
+});
+
+// Update the delete announcement route
+router.delete('/announcement/:id', auth('coordinator'), async (req, res) => {
+    try {
+        const announcement = await Announcement.findById(req.params.id);
+        if (!announcement) {
+            return res.status(404).json({ error: 'Announcement not found' });
+        }
+
+        // Delete associated comments
+        await Comment.deleteMany({ announcement: announcement._id });
+
+        // Delete the announcement's image if it exists
+        if (announcement.imageUrl) {
+            const imagePath = path.join(__dirname, '..', 'public', announcement.imageUrl);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+        }
+
+        await Announcement.deleteOne({ _id: announcement._id });
+        res.json({ message: 'Announcement deleted successfully' });
+    } catch (err) {
+        console.error('Delete announcement error:', err);
+        res.status(500).json({ error: 'Failed to delete announcement' });
     }
 });
 

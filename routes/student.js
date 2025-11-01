@@ -258,15 +258,64 @@ router.get('/dashboard', auth('student'), async (req, res) => {
                     path: 'documents'
                 }
             });
-        
-        if (!user || !user.studentProfile) {
-            console.error('Profile missing for user:', user?._id);
-            return res.redirect('/?error=Profile not found. Please contact administrator.');
-        }
 
-        const announcements = await Announcement.find()
-            .populate('author', 'name profilePicture email')
+        // Update announcements query to fully populate author and comment author (include studentProfile)
+        let announcements = await Announcement.find()
+            .populate({
+                path: 'author',
+                select: 'name profilePicture email studentProfile',
+                populate: { path: 'studentProfile', select: 'personalData' }
+            })
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: 'name profilePicture email studentProfile',
+                    populate: { path: 'studentProfile', select: 'personalData' }
+                },
+                options: { sort: { createdAt: -1 } }
+            })
             .sort({ createdAt: -1 });
+
+        // Normalize author & comment author info asynchronously
+        for (let i = 0; i < announcements.length; i++) {
+            const aDoc = announcements[i];
+            const a = aDoc.toObject ? aDoc.toObject() : aDoc;
+
+            let auth = a.author || {};
+            let pd = auth.studentProfile?.personalData;
+
+            if (!pd && auth._id) {
+                const sp = await StudentProfile.findOne({ user: auth._id }).lean();
+                pd = sp?.personalData;
+            }
+
+            const builtName = auth.name || (pd ? [pd.givenName || pd.firstName, pd.middleName, pd.surname || pd.lastName].filter(Boolean).join(' ') : undefined);
+            auth.name = builtName || auth.email || 'User';
+            auth.profilePicture = auth.profilePicture || pd?.profilePicture || '/images/default-avatar.png';
+            a.author = auth;
+
+            const comments = a.comments || [];
+            for (let j = 0; j < comments.length; j++) {
+                const comm = comments[j];
+                let cAuth = comm.author || {};
+                let cpd = cAuth.studentProfile?.personalData;
+
+                if (!cpd && cAuth._id) {
+                    const spc = await StudentProfile.findOne({ user: cAuth._id }).lean();
+                    cpd = spc?.personalData;
+                }
+
+                const cBuiltName = cAuth.name || (cpd ? [cpd.givenName || cpd.firstName, cpd.middleName, cpd.surname || cpd.lastName].filter(Boolean).join(' ') : undefined);
+                cAuth.name = cBuiltName || cAuth.email || 'User';
+                cAuth.profilePicture = cAuth.profilePicture || cpd?.profilePicture || '/images/default-avatar.png';
+                comm.author = cAuth;
+                comments[j] = comm;
+            }
+
+            a.comments = comments;
+            announcements[i] = a;
+        }
 
         // Define document arrays
         const documentData = {

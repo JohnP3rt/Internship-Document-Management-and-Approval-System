@@ -27,30 +27,76 @@
                 <!-- Home/Announcements Tab -->
                 <div class="tab-pane fade show active" id="home">
                     <h4 class="mb-4">Announcements</h4>
+                    <!-- Replace the announcements section -->
                     <div class="announcements-list">
-                        <% if (announcements && announcements.length > 0) { %>
-                            <% announcements.forEach(announcement => { %>
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img src="<%= announcement.author.profilePicture || '/images/default-avatar.png' %>" 
-                                                 class="rounded-circle me-2" 
-                                                 style="width: 40px; height: 40px; object-fit: cover;">
-                                            <div>
-                                                <h5 class="card-title mb-0"><%= announcement.title %></h5>
-                                                <small class="text-muted">Posted by <%= announcement.author.name || 'Coordinator' %></small>
+                      <% if (announcements && announcements.length > 0) { %>
+                        <% announcements.forEach(announcement => { %>
+                          <div class="card mb-4">
+                            <div class="card-header bg-white border-0 py-3">
+                              <div class="d-flex align-items-center">
+                                <img src="<%= announcement.author?.profilePicture || '/images/default-avatar.png' %>" 
+                                     class="rounded-circle me-3" 
+                                     style="width: 48px; height: 48px; object-fit: cover;">
+                                <div>
+                                  <h6 class="mb-0"><%= announcement.author?.name || announcement.author?.email %></h6>
+                                  <!-- server-rendered announcement header time -->
+                                  <small class="text-muted">
+                                    <%= new Date(announcement.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="card-body pt-0">
+                              <h5 class="card-title"><%= announcement.title %></h5>
+                              <p class="card-text"><%= announcement.content %></p>
+                              <% if (announcement.imageUrl) { %>
+                                <img src="<%= announcement.imageUrl %>" class="img-fluid rounded mb-3">
+                              <% } %>
+                              
+                              <!-- Comments Section -->
+                              <div class="border-top pt-3">
+                                <button class="btn btn-outline-primary btn-sm mb-3" onclick="toggleComments(this)">
+                                  <i class="bi bi-chat"></i> Comments (<%= announcement.comments?.length || 0 %>)
+                                </button>
+                                
+                                <div class="comments-section" style="display: none;">
+                                  <form class="comment-form d-flex gap-2 mb-3" data-announcement="<%= announcement._id %>">
+                                    <!-- use user.profilePicture OR student profile picture OR default -->
+                                    <img src="<%= user.profilePicture || (profile?.personalData?.profilePicture) || '/images/default-avatar.png' %>" 
+                                         class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                      <input type="text" class="form-control rounded-pill" placeholder="Write a comment...">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm px-3">Post</button>
+                                  </form>
+                                  
+                                  <div class="comments-list">
+                                    <% (announcement.comments || []).forEach(comment => { %>
+                                        <div class="d-flex gap-2 mb-2">
+                                            <img src="<%= comment.author?.profilePicture || '/images/default-avatar.png' %>" 
+                                                 class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                            <div class="bg-light rounded-3 p-2 flex-grow-1">
+                                                <div class="fw-bold"><%= comment.author?.name || comment.author?.email %></div>
+                                                <p class="mb-1"><%= comment.content %></p>
+                                                <!-- server-rendered comment time -->
+                                                <small class="text-muted">
+                                                  <%= new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
+                                                </small>
                                             </div>
                                         </div>
-                                        <p class="card-text"><%= announcement.content %></p>
-                                        <small class="text-muted">
-                                            Posted on <%= new Date(announcement.createdAt).toLocaleString() %>
-                                        </small>
-                                    </div>
+                                    <% }) %>
+                                  </div>
                                 </div>
-                            <% }) %>
-                        <% } else { %>
-                            <p class="text-muted">No announcements yet.</p>
-                        <% } %>
+                              </div>
+                            </div>
+                          </div>
+                        <% }) %>
+                      <% } else { %>
+                        <div class="text-center py-5 text-muted">
+                          <i class="bi bi-megaphone display-1 mb-3"></i>
+                          <p>No announcements yet.</p>
+                        </div>
+                      <% } %>
                     </div>
                 </div>
 
@@ -316,58 +362,116 @@
 
                 <!-- Profile Tab -->
                 <div class="tab-pane fade" id="profile">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-4">
-                                <h4>Student Profile</h4>
-                                <div class="text-center">
-                                    <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>" 
-                                         class="rounded-circle profile-picture mb-2" 
-                                         style="width: 150px; height: 150px; object-fit: cover;">
-                                    <div>
-                                        <a href="/student/edit-profile" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i> Edit Profile
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+  <div class="profile-card bg-white rounded-lg shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between">
+      <div class="profile-info flex-grow-1">
+        <h1 class="display-5 fw-bold mb-1">
+          <%= profile.personalData.givenName %> <%= profile.personalData.surname %>
+        </h1>
+        <p class="text-muted mb-2">
+          <i class="bi bi-person-badge me-2"></i>
+          Student ID: <%= profile.personalData.studentId %>
+        </p>
+        <div class="mb-3">
+          <p class="mb-1 fs-5">
+            <i class="bi bi-book me-2"></i>
+            <%= profile.personalData.course %>
+            (<%= profile.personalData.yearSection %>)
+          </p>
+          <% if (profile.personalData.major) { %>
+          <p class="text-muted mb-1">
+            <i class="bi bi-bookmark-star me-2"></i>
+            Major in <%= profile.personalData.major %>
+          </p>
+          <% } %>
+        </div>
+        <div class="contact-info mb-4">
+          <p class="mb-1">
+            <i class="bi bi-telephone me-2"></i>
+            <%= profile.personalData.contactNumber %>
+          </p>
+          <p class="mb-1">
+            <i class="bi bi-envelope me-2"></i>
+            <%= user.email %>
+          </p>
+        </div>
+        <a href="/student/edit-profile" class="btn btn-primary">
+          <i class="bi bi-pencil-square me-2"></i>
+          Edit Profile
+        </a>
+      </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Student ID</label>
-                                    <p class="mb-0"><%= profile.personalData.studentId %></p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Full Name</label>
-                                    <p class="mb-0">
-                                        <%= profile.personalData.givenName %> <%= profile.personalData.middleName %> <%= profile.personalData.surname %>
-                                    </p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Course</label>
-                                    <p class="mb-0"><%= profile.personalData.course %></p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Year & Section</label>
-                                    <p class="mb-0"><%= profile.personalData.yearSection %></p>
-                                </div>
-                                <!-- Add other profile fields -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Contact Number</label>
-                                    <p class="mb-0"><%= profile.personalData.contactNumber %></p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label text-muted">Email</label>
-                                    <p class="mb-0"><%= user.email %></p>
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label class="form-label text-muted">Current Address</label>
-                                    <p class="mb-0"><%= profile.personalData.currentAddress %></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="profile-picture-container text-center ms-4">
+        <div class="position-relative" style="width: 200px; height: 200px">
+          <img
+            src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>"
+            class="rounded-circle border shadow-sm"
+            style="width: 100%; height: 100%; object-fit: cover"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-light">
+          <h5 class="card-title mb-0">
+            <i class="bi bi-person-vcard-fill me-2"></i>
+            Personal & Address Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="text-muted small">Birthday</label>
+                <p class="mb-0">
+                  <%= profile.personalData.dateOfBirth ? new
+                  Date(profile.personalData.dateOfBirth).toLocaleDateString('en-US', { year:
+                  'numeric', month: 'long', day: 'numeric' }) : 'Not set' %>
+                </p>
+              </div>
+              <div class="mb-3">
+                <label class="text-muted small">Civil Status</label>
+                <p class="mb-0">
+                  <%= profile.personalData.civilStatus || 'Not set' %>
+                </p>
+              </div>
+              <div class="mb-3">
+                <label class="text-muted small">Gender</label>
+                <p class="mb-0">
+                  <%= profile.personalData.sex || 'Not set' %>
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="text-muted small">Home Address</label>
+                <p class="mb-0">
+                  <%= profile.personalData.homeAddress || 'Not set' %>
+                </p>
+              </div>
+              <div class="mb-3">
+                <label class="text-muted small">Current Address</label>
+                <p class="mb-0">
+                  <%= profile.personalData.currentAddress || 'Not set' %>
+                </p>
+              </div>
+              <div class="mb-3">
+                <label class="text-muted small">Parent/Guardian</label>
+                <p class="mb-0">
+                  <%= profile.personalData.guardianName || 'Not set' %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
             </div>
         </div>
     </div>
@@ -408,6 +512,66 @@ document.querySelectorAll('.document-upload').forEach(input => {
         } catch (err) {
             console.error('Upload error:', err);
             alert(err.message || 'Upload failed. Please try again.');
+        }
+    });
+});
+
+function toggleComments(btn) {
+  const commentsSection = btn.nextElementSibling;
+  if (commentsSection.style.display === 'none') {
+    commentsSection.style.display = 'block';
+    btn.classList.add('active');
+  } else {
+    commentsSection.style.display = 'none';
+    btn.classList.remove('active');
+  }
+}
+
+// Update comment submission handler
+document.querySelectorAll('.comment-form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = form.querySelector('input');
+        const announcementId = form.dataset.announcement;
+        
+        if (!input.value.trim()) return;
+
+        try {
+            const response = await fetch(`/coordinator/announcement/${announcementId}/comment`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: input.value.trim() })
+            });
+            
+            if (!response.ok) throw new Error('Failed to post comment');
+            
+            const comment = await response.json();
+            
+            // Add new comment to DOM
+            const commentsList = form.nextElementSibling;
+            const commentHtml = `
+                <div class="d-flex gap-2 mb-2">
+                    <img src="${comment.author.profilePicture || '/images/default-avatar.png'}" 
+                         class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                    <div class="bg-light rounded-3 p-2 flex-grow-1">
+                        <div class="fw-bold">${comment.author.name || comment.author.email}</div>
+                        <p class="mb-1">${comment.content}</p>
+                        <small class="text-muted">${new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</small>
+                    </div>
+                </div>
+            `;
+            commentsList.insertAdjacentHTML('afterbegin', commentHtml);
+            
+            // Update comment count
+            const commentBtn = form.closest('.comments-section').previousElementSibling;
+            const currentCount = parseInt(commentBtn.textContent.match(/\d+/)[0]);
+            commentBtn.innerHTML = `<i class="bi bi-chat"></i> Comments (${currentCount + 1})`;
+            
+            input.value = '';
+        } catch (err) {
+            alert('Error posting comment: ' + err.message);
         }
     });
 });

@@ -98,12 +98,22 @@ const AnnouncementSchema = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  imageUrl: { type: String }, // Add image support
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // Add comments reference
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date }
+});
+
+const CommentSchema = new Schema({
+  content: { type: String, required: true },
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  announcement: { type: Schema.Types.ObjectId, ref: 'Announcement', required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model('User', UserSchema);
 const StudentProfile = mongoose.model('StudentProfile', StudentProfileSchema);
 const Announcement = mongoose.model('Announcement', AnnouncementSchema);
+const Comment = mongoose.model('Comment', CommentSchema);
 
-module.exports = { User, StudentProfile, Announcement };
+module.exports = { User, StudentProfile, Announcement, Comment };
