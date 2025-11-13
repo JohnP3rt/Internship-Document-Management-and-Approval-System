@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Login form handler
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -13,11 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const data = await response.json();
                 if (data.token) {
-                    // Store token
                     localStorage.setItem('token', data.token);
-                    // Set token cookie
                     document.cookie = `token=${data.token}; path=/`;
-                    // Redirect based on role
                     window.location.href = `/${data.role}/dashboard`;
                 } else {
                     alert(data.error || 'Login failed');
@@ -28,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // token for fetch request for auth
     const originalFetch = window.fetch;
     window.fetch = function() {
         let [resource, config] = arguments;
@@ -39,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
             config.headers = {};
         }
         
-        // checker langs for token
         const token = localStorage.getItem('token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
@@ -48,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return originalFetch(resource, config);
     };
 
-    // delete docs
     document.querySelectorAll('.delete-doc').forEach(button => {
         button.addEventListener('click', async () => {
             if (confirm('Are you sure you want to delete this document?')) {
@@ -66,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Registration form handler
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
@@ -91,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add coordinator action handlers
     document.querySelectorAll('.approve-student').forEach(button => {
         button.addEventListener('click', async (e) => {
             const userId = e.target.dataset.id;

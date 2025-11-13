@@ -1,0 +1,84 @@
+Authentication & User Management
+✓ Student registration system with email, password, student ID, and personal details
+✓ User login with JWT token authentication
+✓ Role-based access control (Student, Coordinator, Director)
+✓ User account status management (pending, active, rejected)
+✓ Password hashing with bcryptjs
+Student Features
+✓ Student dashboard with document tracking
+✓ Edit profile functionality with profile picture upload
+✓ Document upload system (multiple document types)
+✓ Document status tracking (Submitted, Checked, For Revision, Done, etc.)
+✓ Document deletion
+✓ Pre-deployment requirements section
+✓ Post-OJT requirements section
+50% Progress tracking with progress bars
+✓ Document comments/feedback system
+✓ Personal data management
+Coordinator Features
+✓ Coordinator dashboard with navigation tabs
+✓ Review submissions functionality
+✓ Account requests management
+✓ Coordinator management
+✓ Student profile review
+✓ Coordinator checklist system
+✓ Mark submissions para mag done (send to director)
+✓ Create new coordinators
+✓ Profile picture upload for coordinators
+✓ Pending students list
+Director Features
+✓ Director dashboard
+✓ View pending profiles for review
+✓ Student details view
+✓ Document status updates
+✓ Add comments to documents
+✓ Document approval workflow
+Document Management
+✓ Pre-deployment documents (Record File, Application Letter, Medical Certificate, etc.)
+✓ Legal forms (MOA, Waiver, Consent, etc.)
+✓ Post-OJT documents (Evaluation Form, Completion Certificate, etc.)
+✓ File upload with multer
+✓ Document type enumeration
+✓ Upload date tracking
+✓ File URL storage
+Database & Models
+✓ MongoDB connection
+✓ User schema with roles and status
+✓ StudentProfile schema with personal data and documents
+✓ Document schema with comments
+✓ Announcement schema
+✓ Comment schema
+UI/Frontend
+✓ Registration page (EJS template)
+✓ Student dashboard view
+✓ Director dashboard view
+✓ Coordinator dashboard view
+✓ Document upload form
+✓ Bootstrap 5 styling
+✓ Responsive navbar
+✓ Error and message alerts
+✓ Accordion-based document sections
+Backend Infrastructure
+✓ Express.js server setup
+✓ Route organization (auth, student, coordinator, director)
+✓ Middleware for authentication
+✓ Error handling
+✓ Config management with dotenv
+✓ Database seeding scripts
+✓ Database reset script
+✓ CORS configuration
+✓ Cookie parser setup
+File Management
+✓ Document upload directory
+✓ Profile picture upload directory
+✓ Multer storage configuration
+✓ File type validation
+Tech Inclusion
+0% AI Chatbot
+
+
+Back Log
+- AI Chatbot
+- Fix the Progress Bar on student 'ndi mag dynamic'
+- Mag UI page
+- Some successful message fix 'destroys ui sometimes'

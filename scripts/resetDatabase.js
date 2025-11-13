@@ -10,12 +10,10 @@ const resetDatabase = async () => {
     await mongoose.connect(config.MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    // Delete all documents from collections
     await User.deleteMany({});
     await StudentProfile.deleteMany({});
     console.log('Deleted all documents from collections');
 
-    // Clear uploads directory
     const uploadsDir = path.join(__dirname, '..', config.UPLOAD_DIR);
     if (fs.existsSync(uploadsDir)) {
       fs.readdirSync(uploadsDir).forEach(file => {

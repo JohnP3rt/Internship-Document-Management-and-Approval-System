@@ -1,0 +1,51 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Director Dashboard</h2>
+    <div>
+      <a href="/coordinator/dashboard" class="btn btn-outline-secondary">Back</a>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Profiles Pending Director Review</h5>
+    </div>
+    <div class="card-body">
+      <% if (profiles && profiles.length) { %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Overall Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% profiles.forEach(p => { %>
+                <tr>
+                  <td><%= p.personalData?.studentId || 'N/A' %></td>
+                  <td>
+                    <%= p.personalData?.givenName || p.personalData?.firstName %>
+                    <%= p.personalData?.surname || p.personalData?.lastName %>
+                  </td>
+                  <td><%= p.personalData?.course || 'N/A' %></td>
+                  <td><span class="badge bg-warning text-dark"><%= p.overallStatus || 'Pending' %></span></td>
+                  <td>
+                    <a href="/director/student-view/<%= p._id %>" class="btn btn-sm btn-primary">View</a>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="text-center text-muted py-4">
+          No profiles awaiting director review.
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

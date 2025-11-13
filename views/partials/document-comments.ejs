@@ -1,0 +1,26 @@
+<div class="card mt-3">
+  <div class="card-header">
+    <h6 class="mb-0">Comments</h6>
+  </div>
+  <div class="card-body">
+    <% if (comments && comments.length > 0) { %>
+      <div class="mb-3">
+        <% comments.forEach(comment => { %>
+          <div class="bg-light rounded p-3 mb-2">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="mb-1"><%= comment.author %></h6>
+                <p class="mb-0 text-muted"><%= comment.content %></p>
+              </div>
+            </div>
+            <small class="text-muted d-block mt-2">
+              <%= new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit' }) %>
+            </small>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No comments yet.</p>
+    <% } %>
+  </div>
+</div>

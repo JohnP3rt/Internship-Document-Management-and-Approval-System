@@ -181,7 +181,19 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <small class="text-muted"><%= existingDoc?.comments || '-' %></small>
+                                                        <small class="text-muted"><%= existingDoc?.comments?.length > 0 ? existingDoc.comments.length + ' comment(s)' : '-' %></small>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex gap-2">
+                                                            <% if (existingDoc) { %>
+                                                                <a href="<%= existingDoc.fileUrl %>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </a>
+                                                            <% } %>
+                                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#studentDocCommentsModal" data-doc-id="<%= existingDoc?._id %>" data-doc-title="<%= doc.label %>">
+                                                                <i class="bi bi-chat"></i> Comments
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
@@ -264,7 +276,19 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <small class="text-muted"><%= existingDoc?.comments || '-' %></small>
+                                                        <small class="text-muted"><%= existingDoc?.comments?.length > 0 ? existingDoc.comments.length + ' comment(s)' : '-' %></small>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex gap-2">
+                                                            <% if (existingDoc) { %>
+                                                                <a href="<%= existingDoc.fileUrl %>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </a>
+                                                            <% } %>
+                                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#studentDocCommentsModal" data-doc-id="<%= existingDoc?._id %>" data-doc-title="<%= doc.label %>">
+                                                                <i class="bi bi-chat"></i> Comments
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
@@ -347,7 +371,19 @@
                                                         </span>
                                                     </td>
                                                     <td>
-                                                        <small class="text-muted"><%= existingDoc?.comments || '-' %></small>
+                                                        <small class="text-muted"><%= existingDoc?.comments?.length > 0 ? existingDoc.comments.length + ' comment(s)' : '-' %></small>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex gap-2">
+                                                            <% if (existingDoc) { %>
+                                                                <a href="<%= existingDoc.fileUrl %>" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                                                    <i class="bi bi-eye"></i> View
+                                                                </a>
+                                                            <% } %>
+                                                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#studentDocCommentsModal" data-doc-id="<%= existingDoc?._id %>" data-doc-title="<%= doc.label %>">
+                                                                <i class="bi bi-chat"></i> Comments
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
@@ -474,6 +510,73 @@
 </div>
             </div>
         </div>
+
+        <!-- Student Document Comments Modal -->
+        <div class="modal fade" id="studentDocCommentsModal" tabindex="-1" aria-labelledby="studentDocModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="studentDocModalLabel">Comments - <span id="studentDocTitle"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="studentCommentsList" class="mb-4" style="max-height: 300px; overflow-y: auto;">
+                            <div class="text-center py-3">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.getElementById('studentDocCommentsModal').addEventListener('show.bs.modal', async function (e) {
+            const button = e.relatedTarget;
+            const docId = button.getAttribute('data-doc-id');
+            const docTitle = button.getAttribute('data-doc-title');
+            
+            document.getElementById('studentDocTitle').textContent = docTitle;
+            const commentsList = document.getElementById('studentCommentsList');
+            
+            try {
+                // Fetch fresh comments from server
+                const response = await fetch(`/student/document-comments/${docId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch comments');
+                }
+
+                const data = await response.json();
+                const comments = data.comments || [];
+                
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p class="text-muted text-center">No comments yet.</p>';
+                } else {
+                    commentsList.innerHTML = comments.map(c => `
+                        <div class="bg-light rounded p-3 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <strong>${c.author}</strong>
+                                <small class="text-muted">${new Date(c.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</small>
+                            </div>
+                            <p class="mb-0 mt-2">${c.content}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Error fetching comments:', err);
+                commentsList.innerHTML = '<p class="text-danger text-center">Error loading comments. Please try again.</p>';
+            }
+        });
+        </script>
     </div>
 </div>
 
@@ -527,7 +630,6 @@ function toggleComments(btn) {
   }
 }
 
-// Update comment submission handler
 document.querySelectorAll('.comment-form').forEach(form => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -564,7 +666,6 @@ document.querySelectorAll('.comment-form').forEach(form => {
             `;
             commentsList.insertAdjacentHTML('afterbegin', commentHtml);
             
-            // Update comment count
             const commentBtn = form.closest('.comments-section').previousElementSibling;
             const currentCount = parseInt(commentBtn.textContent.match(/\d+/)[0]);
             commentBtn.innerHTML = `<i class="bi bi-chat"></i> Comments (${currentCount + 1})`;

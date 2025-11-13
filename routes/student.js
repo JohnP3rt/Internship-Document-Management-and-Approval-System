@@ -41,7 +41,7 @@ const upload = multer({
         }
     },
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB
+        fileSize: 5 * 1024 * 1024
     }
 });
 
@@ -73,7 +73,7 @@ const profileUpload = multer({
         }
     },
     limits: {
-        fileSize: 10 * 1024 * 1024 // Increased to 10MB
+        fileSize: 10 * 1024 * 1024
     }
 }).single('profilePicture');
 
@@ -95,7 +95,7 @@ const docUpload = multer({
         }
     },
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
+        fileSize: 5 * 1024 * 1024
     }
 }).single('file');
 
@@ -126,7 +126,6 @@ router.post('/upload', auth('student'), (req, res) => {
                 return res.status(404).json({ error: 'Student profile not found' });
             }
 
-            // Check for existing document
             const existingDocIndex = profile.documents.findIndex(d => d.docType === req.body.docType);
             
             const documentData = {
@@ -138,10 +137,8 @@ router.post('/upload', auth('student'), (req, res) => {
             };
 
             if (existingDocIndex !== -1) {
-                // Update existing document
                 profile.documents[existingDocIndex] = documentData;
             } else {
-                // Add new document
                 profile.documents.push(documentData);
             }
 
@@ -161,7 +158,6 @@ router.get('/me', auth('student'), async (req, res) => {
   res.json(user.studentProfile);
 });
 
-// Fix personal data route
 router.put('/personal-data', auth('student'), async (req, res) => {
     try {
         const profile = await StudentProfile.findOne({ user: req.user.userId });
@@ -259,7 +255,6 @@ router.get('/dashboard', auth('student'), async (req, res) => {
                 }
             });
 
-        // Update announcements query to fully populate author and comment author (include studentProfile)
         let announcements = await Announcement.find()
             .populate({
                 path: 'author',
@@ -277,7 +272,6 @@ router.get('/dashboard', auth('student'), async (req, res) => {
             })
             .sort({ createdAt: -1 });
 
-        // Normalize author & comment author info asynchronously
         for (let i = 0; i < announcements.length; i++) {
             const aDoc = announcements[i];
             const a = aDoc.toObject ? aDoc.toObject() : aDoc;
@@ -317,7 +311,6 @@ router.get('/dashboard', auth('student'), async (req, res) => {
             announcements[i] = a;
         }
 
-        // Define document arrays
         const documentData = {
             preDeploymentDocs: [
                 { label: 'Record File', value: 'record_file' },
@@ -363,7 +356,6 @@ router.get('/dashboard', auth('student'), async (req, res) => {
     }
 });
 
-// Update template download route
 router.get('/templates/:docType', auth('student'), async (req, res) => {
     const { docType } = req.params;
     try {
@@ -391,6 +383,26 @@ router.get('/templates/:docType', auth('student'), async (req, res) => {
     } catch (err) {
         console.error('Template download error:', err);
         res.status(500).json({ error: 'Error downloading template' });
+    }
+});
+
+router.get('/document-comments/:docId', auth('student'), async (req, res) => {
+    try {
+        const profile = await StudentProfile.findOne({ user: req.user._id, 'documents._id': req.params.docId });
+        if (!profile) {
+            return res.status(404).json({ error: 'Document not found' });
+        }
+
+        const doc = profile.documents.find(d => d._id.toString() === req.params.docId);
+        if (!doc) {
+            return res.status(404).json({ error: 'Document not found' });
+        }
+
+        const comments = Array.isArray(doc.comments) ? doc.comments : [];
+        res.json({ comments });
+    } catch (err) {
+        console.error('Fetch comments error:', err);
+        res.status(500).json({ error: 'Failed to fetch comments' });
     }
 });
 

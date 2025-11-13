@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['student', 'coordinator', 'director'], required: true },
-  status: { type: String, enum: ['pending', 'active', 'rejected'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'active', 'rejected', 'Processing', 'Revise', 'For Signature'], default: 'pending' },
   studentProfile: { type: Schema.Types.ObjectId, ref: 'StudentProfile' },
   name: { type: String },
   profilePicture: { type: String }
@@ -70,22 +70,26 @@ const StudentProfileSchema = new Schema({
     fileUrl: String,
     status: {
       type: String,
-      enum: ['Submitted', 'Checked', 'For Revision', 'Done'],
+      enum: ['Submitted', 'Checked', 'For Revision', 'Done', 'Processing', 'Revise', 'For Signature'],
       default: 'Submitted'
     },
     uploadDate: {
       type: Date,
       default: Date.now
     },
-    comments: String
+    comments: [{
+      author: String,
+      content: String,
+      createdAt: {
+        type: Date,
+        default: Date.now
+      }
+    }]
   }],
-
-  //dipa finalize  
   coordinatorChecklist: {
     clearance_checked: { type: Boolean, default: false },
     moa_checked: { type: Boolean, default: false },
     record_file_checked: { type: Boolean, default: false }
-    // ...add other checklist items here...
   },
   overallStatus: {
     type: String,
@@ -98,8 +102,8 @@ const AnnouncementSchema = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  imageUrl: { type: String }, // Add image support
-  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // Add comments reference
+  imageUrl: { type: String },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date }
 });
