@@ -38,10 +38,6 @@
                       <select class="form-select form-select-sm director-status-select" data-doc-id="<%= doc._id %>">
                         <option value="Processing" <%= doc.status==='Processing' ? 'selected':'' %>>Processing</option>
                         <option value="Revise" <%= doc.status==='Revise' ? 'selected':'' %>>Revise</option>
-                        <option value="For Signature" <%= doc.status==='For Signature' ? 'selected':'' %>>For Signature</option>
-                        <option value="Submitted" <%= doc.status==='Submitted' ? 'selected':'' %>>Submitted</option>
-                        <option value="Checked" <%= doc.status==='Checked' ? 'selected':'' %>>Checked</option>
-                        <option value="For Revision" <%= doc.status==='For Revision' ? 'selected':'' %>>For Revision</option>
                         <option value="Done" <%= doc.status==='Done' ? 'selected':'' %>>Done</option>
                       </select>
                     </td>

@@ -55,7 +55,7 @@ router.post('/login', async (req, res) => {
 // GET /api/auth/logout
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
-  res.redirect('/?message=Successfully logged out');
+  res.redirect('/');
 });
 
-module.exports = router;  
+module.exports = router;
