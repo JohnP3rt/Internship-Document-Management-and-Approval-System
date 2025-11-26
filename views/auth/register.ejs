@@ -1,39 +1,173 @@
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --mongo-green: #0f5bd5;
+            --mongo-green-hover: #166da4;
+            --mongo-text: #1C2D38;
+            --mongo-muted: #5C6C75;
+            --mongo-border: #E8EDEB;
+            --mongo-focus-ring: rgba(0, 104, 74, 0.25);
+        }
+
+        body {
+            background-color: #FAFBFC;
+            font-family: 'Inter', sans-serif;
+            color: var(--mongo-text);
+        }
+
+        .register-card {
+            border: 1px solid var(--mongo-border);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            background: #fff;
+        }
+
+        .brand-header h2 {
+            font-weight: 700;
+            color: var(--mongo-text);
+            font-size: 1.5rem;
+        }
+
+        .brand-header p {
+            color: var(--mongo-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Form Inputs */
+        .form-control {
+            border: 1px solid #C1C7C6;
+            border-radius: 6px;
+            font-size: 14px;
+            padding-top: 1.625rem;
+            padding-bottom: 0.625rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--mongo-green);
+            box-shadow: 0 0 0 3px var(--mongo-focus-ring);
+        }
+
+        .form-floating > label {
+            color: var(--mongo-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Primary Button */
+        .btn-mongo {
+            background-color: var(--mongo-green);
+            border-color: var(--mongo-green);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mongo:hover {
+            background-color: var(--mongo-green-hover);
+            border-color: var(--mongo-green-hover);
+            color: white;
+        }
+
+        /* Links */
+        a {
+            color: var(--mongo-green);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        a:hover {
+            color: var(--mongo-green-hover);
+            text-decoration: underline;
+        }
+        
+        /* Terms Text */
+        .terms-text {
+            font-size: 11px;
+            color: var(--mongo-muted);
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="row justify-content-center min-vh-100 align-items-center m-0 py-5">
+    <div class="col-md-6 col-lg-5"> 
+        <div class="card register-card p-4">
             <div class="card-body">
-                <h3 class="card-title text-center">Sign up</h3>
+                
+                <div class="text-center brand-header mb-4">
+                    <h2>Create your account</h2>
+                    <p>Get started with the student portal</p>
+                </div>
+             
                 <form id="registerForm">
-                     <div class="mb-3">
-                        <label>First Name</label>
-                        <input type="text" name="firstName" class="form-control" required>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="firstName" class="form-control" id="firstName" placeholder="John" required>
+                                <label for="firstName">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" name="lastName" class="form-control" id="lastName" placeholder="Doe" required>
+                                <label for="lastName">Last Name</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label>Last Name</label>
-                        <input type="text" name="lastName" class="form-control" required>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" name="studentId" class="form-control" id="studentId" placeholder="12345678" required>
+                        <label for="studentId">Student ID</label>
                     </div>
-                    <div class="mb-3">
-                        <label>Student ID</label>
-                        <input type="text" name="studentId" class="form-control" required>
+
+                    <div class="form-floating mb-3">
+                        <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
+                        <label for="email">School Email</label>
                     </div>
-                    <div class="mb-3">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" required>
+
+                    <div class="form-floating mb-3">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                        <div class="form-text mt-2" style="font-size: 11px; color: var(--mongo-muted);">
+                            Must be at least 8 characters long.
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <input type="password" name="password" class="form-control" required>
+                    
+                    <div class="mb-4">
+                        <p class="terms-text">
+                            By clicking Register, you accept our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                        </p>
                     </div>
-                    <!-- <div class="mb-3">
-                        <label>Contact Number</label>
-                        <input type="text" name="contactNumber" class="form-control" required>
-                    </div> -->
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
+
+                    <button type="submit" class="btn btn-mongo w-100 py-2 mb-4">Register</button>
+                    
+                    <div class="text-center">
+                        <p class="mb-0 text-muted" style="font-size: 14px;">
+                            Already have an account? <a href="/">Log in</a>
+                        </p>
+                    </div>
                 </form>
             </div>
         </div>
-            <p class="text-center mt-3">
-                Already have an account? <a href="/">Login</a>
-            </p>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted" style="font-size: 12px;">&copy; 2025 Internship System</small>
+        </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,22 +1,112 @@
-<div class="row justify-content-center min-vh-100 align-items-center">
-    <div class="col-md-5">
-        <div class="card shadow-lg">
-            <div class="card-body p-5">
-                <h2 class="text-center mb-4">Log in</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --mongo-green: #0f5bd5;  
+            --mongo-green-hover: #166da4;
+            --mongo-text: #1C2D38;
+            --mongo-muted: #5C6C75;
+            --mongo-border: #E8EDEB;
+            --mongo-focus-ring: rgba(0, 104, 74, 0.25);
+        }
+
+        body {
+            background-color: #FAFBFC; /* Very light gray/white background */
+            font-family: 'Inter', sans-serif;
+            color: var(--mongo-text);
+        }
+
+        .login-card {
+            border: 1px solid var(--mongo-border);
+            border-radius: 12px;
+            /* MongoDB uses very subtle shadows, not heavy ones */
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            background: #fff;
+        }
+
+        .brand-header h2 {
+            font-weight: 700;
+            color: var(--mongo-text);
+            font-size: 1.5rem;
+        }
+        
+        .brand-header p {
+            color: var(--mongo-muted);
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 1px solid #C1C7C6;
+            border-radius: 6px;
+            font-size: 14px;
+            padding-top: 1.625rem;  
+            padding-bottom: 0.625rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--mongo-green);
+            box-shadow: 0 0 0 3px var(--mongo-focus-ring);
+        }
+
+        .form-floating > label {
+            color: var(--mongo-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Primary Button - The "Mongo Green" */
+        .btn-mongo {
+            background-color: var(--mongo-green);
+            border-color: var(--mongo-green);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mongo:hover {
+            background-color: var(--mongo-green-hover);
+            border-color: var(--mongo-green-hover);
+            color: white;
+        }
+
+        /* Links */
+        a {
+            color: var(--mongo-green);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        a:hover {
+            color: var(--mongo-green-hover);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="row justify-content-center min-vh-100 align-items-center m-0">
+    <div class="col-md-5 col-lg-4"> 
+        <div class="card login-card p-4">
+            <div class="card-body">
                 
-                <!-- <div class="text-center mb-4">
-                    <div class="btn-group" role="group">
-                        <input type="radio" class="btn-check" name="roleSelect" id="student" value="student" checked>
-                        <label class="btn btn-outline-primary" for="student">Student</label>
-
-                        <input type="radio" class="btn-check" name="roleSelect" id="coordinator" value="coordinator">
-                        <label class="btn btn-outline-primary" for="coordinator">Coordinator</label>
-
-                        <input type="radio" class="btn-check" name="roleSelect" id="director" value="director">
-                        <label class="btn btn-outline-primary" for="director">Director</label>
+                <div class="text-center brand-header mb-4">
+                    <!-- Logo Section: Centered and Smaller -->
+                    <div class="d-flex justify-content-center mb-3">
+                        <img src="images/logo.png" alt="System Logo" style="height: 32px; width: auto;">
                     </div>
-                </div> -->
-
+                    <h2>Log in to your account</h2>
+                    <p>Welcome back to the portal</p>
+                </div>
+             
                 <form id="loginForm">
                     <div class="form-floating mb-3">
                         <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required>
@@ -26,22 +116,24 @@
                         <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                         <label for="password">Password</label>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2 mb-3">Log in</button>
+                    
+                    <button type="submit" class="btn btn-mongo w-100 py-2 mb-4">Log in</button>
                     
                     <div id="studentRegister" class="text-center">
-                        <p class="mb-0">Just starting? <a href="/register">Apply for account</a></p>
+                        <p class="mb-0 text-muted" style="font-size: 14px;">
+                            Just starting? <a href="/register">Create an account</a>
+                        </p>
                     </div>
                 </form>
             </div>
         </div>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted" style="font-size: 12px;">&copy; 2025 Internship System</small>
+        </div>
     </div>
 </div>
 
-<!-- <script>
-document.querySelectorAll('input[name="roleSelect"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-        const studentRegister = document.getElementById('studentRegister');
-        studentRegister.style.display = e.target.value === 'student' ? 'block' : 'none';
-    });
-});
-</script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
