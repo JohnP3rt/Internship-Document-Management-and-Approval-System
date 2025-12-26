@@ -35,11 +35,10 @@ const profileUpload = multer({
         }
     },
     limits: {
-        fileSize: 10 * 1024 * 1024 // 10MB limit
+        fileSize: 10 * 1024 * 1024 
     }
 }).single('profilePicture');
 
-// Add announcement image storage config
 const announcementStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         const dir = path.join(__dirname, '..', 'uploads', 'announcements');
@@ -54,7 +53,7 @@ const announcementStorage = multer.diskStorage({
 
 const announcementUpload = multer({
     storage: announcementStorage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 }, 
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {
             cb(null, true);
@@ -73,7 +72,7 @@ router.post('/create-coordinator', auth('coordinator'), async (req, res) => {
     const user = await User.create({
       email,
       password: hash,
-      name, // Add name field
+      name, 
       role: 'coordinator',
       status: 'active'
     });
@@ -162,7 +161,6 @@ router.put('/document-status/:docId', auth('coordinator'), async (req, res) => {
     doc.status = req.body.status;
     await profile.save();
 
-    // If coordinator checked the MOA, mark profile for director review
     if (doc.docType === 'moa' && req.body.status === 'Checked') {
       profile.overallStatus = 'Pending Director Review';
       await profile.save();
@@ -211,7 +209,6 @@ router.post('/edit-profile', auth('coordinator'), async (req, res) => {
     });
 });
 
-// Update the dashboard route to properly populate comments and their authors
 router.get('/dashboard', auth('coordinator'), async (req, res) => {
     try {
         const pendingStudents = await User.find({ role: 'student', status: 'pending' })
@@ -226,7 +223,6 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             select: 'personalData documents overallStatus'
           });
 
-        // Update the dashboard announcements population to include author.studentProfile.personalData
         let announcements = await Announcement.find()
             .populate({
                 path: 'author',
@@ -244,16 +240,13 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             })
             .sort({ createdAt: -1 });
 
-        // Normalize author info asynchronously, fetch StudentProfile if author.studentProfile not present
         for (let i = 0; i < announcements.length; i++) {
             const aDoc = announcements[i];
             const a = aDoc.toObject ? aDoc.toObject() : aDoc;
 
-            // announcement author
             let auth = a.author || {};
             let pd = auth.studentProfile?.personalData;
 
-            // if author.studentProfile missing, try to load it
             if (!pd && auth._id) {
                 const sp = await StudentProfile.findOne({ user: auth._id }).lean();
                 pd = sp?.personalData;
@@ -264,7 +257,6 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             auth.profilePicture = auth.profilePicture || pd?.profilePicture || '/images/default-avatar.png';
             a.author = auth;
 
-            // comments authors
             const comments = a.comments || [];
             for (let j = 0; j < comments.length; j++) {
                 const comm = comments[j];
@@ -287,7 +279,6 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             announcements[i] = a;
         }
 
-        // Fetch coordinators so the view has the `coordinators` variable
         const coordinators = await User.find({ role: 'coordinator' }).select('email name status');
 
         res.render('coordinator/dashboard', { 
@@ -305,7 +296,6 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
     }
 });
 
-// Create announcement with image
 router.post('/announcement', auth('coordinator'), (req, res) => {
     announcementUpload(req, res, async (err) => {
         try {
@@ -328,7 +318,6 @@ router.post('/announcement', auth('coordinator'), (req, res) => {
     });
 });
 
-// Update the comment route to properly populate author data
 router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async (req, res) => {
     try {
         const { content } = req.body;
@@ -347,7 +336,6 @@ router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async
         announcement.comments.push(comment._id);
         await announcement.save();
 
-        // Fully populate the comment with author details including studentProfile
         const populatedComment = await Comment.findById(comment._id)
             .populate({
                 path: 'author',
@@ -357,7 +345,7 @@ router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async
             .lean();
 
         const authorObj = populatedComment.author || {};
-        // build full name from stored fields if user.name missing
+      c
         let fullName = authorObj.name;
         const pd = authorObj.studentProfile?.personalData;
         if (!fullName && pd) {
@@ -392,7 +380,6 @@ router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async
     }
 });
 
-// Add new route for document comments
 router.post('/document-comment/:docId', auth('coordinator'), async (req, res) => {
     try {
         const profile = await StudentProfile.findOne({ 'documents._id': req.params.docId });
@@ -418,7 +405,7 @@ router.post('/document-comment/:docId', auth('coordinator'), async (req, res) =>
         };
         
         doc.comments.push(newComment);
-        profile.markModified('documents');  // Change this line
+        profile.markModified('documents'); 
 
         await profile.save();
         
@@ -432,7 +419,6 @@ router.post('/document-comment/:docId', auth('coordinator'), async (req, res) =>
     }
 });
 
-// Update the delete announcement route
 router.delete('/announcement/:id', auth('coordinator'), async (req, res) => {
     try {
         const announcement = await Announcement.findById(req.params.id);
@@ -440,10 +426,8 @@ router.delete('/announcement/:id', auth('coordinator'), async (req, res) => {
             return res.status(404).json({ error: 'Announcement not found' });
         }
 
-        // Delete associated comments
         await Comment.deleteMany({ announcement: announcement._id });
 
-        // Delete the announcement's image if it exists
         if (announcement.imageUrl) {
             const imagePath = path.join(__dirname, '..', 'public', announcement.imageUrl);
             if (fs.existsSync(imagePath)) {
@@ -459,11 +443,10 @@ router.delete('/announcement/:id', auth('coordinator'), async (req, res) => {
     }
 });
 
-// DELETE /api/coordinator/:id - allow deleting coordinator accounts (protected)
 router.delete('/:id', auth('coordinator'), async (req, res) => {
   try {
     const targetId = req.params.id;
-    // prevent deleting self
+
     if (req.user._id.toString() === targetId) {
       return res.status(400).json({ error: 'Cannot delete your own account' });
     }
@@ -481,7 +464,6 @@ router.delete('/:id', auth('coordinator'), async (req, res) => {
   }
 });
 
-// Add route to fetch fresh document comments
 router.get('/document-comments/:docId', auth('coordinator'), async (req, res) => {
     try {
         const profile = await StudentProfile.findOne({ 'documents._id': req.params.docId });
@@ -502,7 +484,6 @@ router.get('/document-comments/:docId', auth('coordinator'), async (req, res) =>
     }
 });
 
-// Delete document comment
 router.delete('/document-comment/:docId/:commentIndex', auth('coordinator'), async (req, res) => {
     try {
         const profile = await StudentProfile.findOne({ 'documents._id': req.params.docId });
@@ -518,7 +499,7 @@ router.delete('/document-comment/:docId/:commentIndex', auth('coordinator'), asy
         const commentIndex = parseInt(req.params.commentIndex);
         if (Array.isArray(doc.comments) && commentIndex >= 0 && commentIndex < doc.comments.length) {
             const comment = doc.comments[commentIndex];
-            // Only allow deletion if user is the comment author
+
             if (comment.author === (req.user.name || req.user.email)) {
                 doc.comments.splice(commentIndex, 1);
                 profile.markModified('documents');
