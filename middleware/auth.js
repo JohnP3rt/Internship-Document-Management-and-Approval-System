@@ -23,8 +23,7 @@ function auth(roles) {
 
             req.user = user;
             res.locals.user = user;
-
-            // Handle both single role string and array of roles
+            
             const allowedRoles = Array.isArray(roles) ? roles : [roles];
             
             if (roles && !allowedRoles.includes(user.role)) {

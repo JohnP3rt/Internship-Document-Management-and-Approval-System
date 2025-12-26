@@ -3,9 +3,7 @@ const router = express.Router();
 const { User, StudentProfile } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('../config/config'); // Add this line
-
-// POST /api/auth/student-register
+const config = require('../config/config');  
 router.post('/student-register', async (req, res) => {
   try {
     const { email, password, studentId, firstName, lastName, contactNumber } = req.body;
@@ -24,7 +22,7 @@ router.post('/student-register', async (req, res) => {
     const profile = await StudentProfile.create({
       user: user._id,
       personalData: {
-        studentId: studentId,  // Make sure this is set
+        studentId: studentId,  
         firstName: firstName,
         lastName: lastName,
         contactNumber: contactNumber
@@ -41,7 +39,7 @@ router.post('/student-register', async (req, res) => {
   }
 });
 
-// POST /api/auth/login
+ 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -52,7 +50,7 @@ router.post('/login', async (req, res) => {
   res.json({ token, role: user.role });
 });
 
-// GET /api/auth/logout
+ 
 router.get('/logout', (req, res) => {
   res.clearCookie('token');
   res.redirect('/');
