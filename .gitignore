@@ -1,1 +1,9 @@
 .env
+chmod
+toDo
+test-key.js
+node_modules/
+config/config.js
+scripts/
+templates/
+uploads/
