@@ -397,117 +397,117 @@
                 </div>
 
                 <!-- Profile Tab -->
-                <div class="tab-pane fade" id="profile">
-  <div class="profile-card bg-white rounded-lg shadow-sm p-4 mb-4">
-    <div class="d-flex justify-content-between">
-      <div class="profile-info flex-grow-1">
-        <h1 class="display-5 fw-bold mb-1">
-          <%= profile.personalData.givenName %> <%= profile.personalData.surname %>
-        </h1>
-        <p class="text-muted mb-2">
-          <i class="bi bi-person-badge me-2"></i>
-          Student ID: <%= profile.personalData.studentId %>
-        </p>
-        <div class="mb-3">
-          <p class="mb-1 fs-5">
-            <i class="bi bi-book me-2"></i>
-            <%= profile.personalData.course %>
-            (<%= profile.personalData.yearSection %>)
-          </p>
-          <% if (profile.personalData.major) { %>
-          <p class="text-muted mb-1">
-            <i class="bi bi-bookmark-star me-2"></i>
-            Major in <%= profile.personalData.major %>
-          </p>
-          <% } %>
-        </div>
-        <div class="contact-info mb-4">
-          <p class="mb-1">
-            <i class="bi bi-telephone me-2"></i>
-            <%= profile.personalData.contactNumber %>
-          </p>
-          <p class="mb-1">
-            <i class="bi bi-envelope me-2"></i>
-            <%= user.email %>
-          </p>
-        </div>
-        <a href="/student/edit-profile" class="btn btn-primary">
-          <i class="bi bi-pencil-square me-2"></i>
-          Edit Profile
-        </a>
-      </div>
+            <div class="tab-pane fade" id="profile">
+            <div class="profile-card bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="d-flex justify-content-between">
+                <div class="profile-info flex-grow-1">
+                    <h1 class="display-5 fw-bold mb-1">
+                    <%= profile.personalData.givenName %> <%= profile.personalData.surname %>
+                    </h1>
+                    <p class="text-muted mb-2">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Student ID: <%= profile.personalData.studentId %>
+                    </p>
+                    <div class="mb-3">
+                    <p class="mb-1 fs-5">
+                        <i class="bi bi-book me-2"></i>
+                        <%= profile.personalData.course %>
+                        (<%= profile.personalData.yearSection %>)
+                    </p>
+                    <% if (profile.personalData.major) { %>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-bookmark-star me-2"></i>
+                        Major in <%= profile.personalData.major %>
+                    </p>
+                    <% } %>
+                    </div>
+                    <div class="contact-info mb-4">
+                    <p class="mb-1">
+                        <i class="bi bi-telephone me-2"></i>
+                        <%= profile.personalData.contactNumber %>
+                    </p>
+                    <p class="mb-1">
+                        <i class="bi bi-envelope me-2"></i>
+                        <%= user.email %>
+                    </p>
+                    </div>
+                    <a href="/student/edit-profile" class="btn btn-primary">
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Edit Profile
+                    </a>
+                </div>
 
-      <div class="profile-picture-container text-center ms-4">
-        <div class="position-relative" style="width: 200px; height: 200px">
-          <img
-            src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>"
-            class="rounded-circle border shadow-sm"
-            style="width: 100%; height: 100%; object-fit: cover"
-          />
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="profile-picture-container text-center ms-4">
+                    <div class="position-relative" style="width: 200px; height: 200px">
+                    <img
+                        src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>"
+                        class="rounded-circle border shadow-sm"
+                        style="width: 100%; height: 100%; object-fit: cover"
+                    />
+                    </div>
+                </div>
+                </div>
+            </div>
 
-  <div class="row g-4">
-    <div class="col-12">
-      <div class="card shadow-sm h-100">
-        <div class="card-header bg-light">
-          <h5 class="card-title mb-0">
-            <i class="bi bi-person-vcard-fill me-2"></i>
-            Personal & Address Information
-          </h5>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="text-muted small">Birthday</label>
-                <p class="mb-0">
-                  <%= profile.personalData.dateOfBirth ? new
-                  Date(profile.personalData.dateOfBirth).toLocaleDateString('en-US', { year:
-                  'numeric', month: 'long', day: 'numeric' }) : 'Not set' %>
-                </p>
-              </div>
-              <div class="mb-3">
-                <label class="text-muted small">Civil Status</label>
-                <p class="mb-0">
-                  <%= profile.personalData.civilStatus || 'Not set' %>
-                </p>
-              </div>
-              <div class="mb-3">
-                <label class="text-muted small">Gender</label>
-                <p class="mb-0">
-                  <%= profile.personalData.sex || 'Not set' %>
-                </p>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-3">
-                <label class="text-muted small">Home Address</label>
-                <p class="mb-0">
-                  <%= profile.personalData.homeAddress || 'Not set' %>
-                </p>
-              </div>
-              <div class="mb-3">
-                <label class="text-muted small">Current Address</label>
-                <p class="mb-0">
-                  <%= profile.personalData.currentAddress || 'Not set' %>
-                </p>
-              </div>
-              <div class="mb-3">
-                <label class="text-muted small">Parent/Guardian</label>
-                <p class="mb-0">
-                  <%= profile.personalData.guardianName || 'Not set' %>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="row g-4">
+                <div class="col-12">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-vcard-fill me-2"></i>
+                        Personal & Address Information
+                    </h5>
+                    </div>
+                    <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="text-muted small">Birthday</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.dateOfBirth ? new
+                            Date(profile.personalData.dateOfBirth).toLocaleDateString('en-US', { year:
+                            'numeric', month: 'long', day: 'numeric' }) : 'Not set' %>
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Civil Status</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.civilStatus || 'Not set' %>
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Gender</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.sex || 'Not set' %>
+                            </p>
+                        </div>
+                        </div>
+                        <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="text-muted small">Home Address</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.homeAddress || 'Not set' %>
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Current Address</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.currentAddress || 'Not set' %>
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small">Parent/Guardian</label>
+                            <p class="mb-0">
+                            <%= profile.personalData.guardianName || 'Not set' %>
+                            </p>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+                </div>
+                </div>
             </div>
         </div>
 

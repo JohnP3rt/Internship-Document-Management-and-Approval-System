@@ -181,6 +181,43 @@
               <small class="text-muted">Students with submitted documents</small>
             </div>
             <div class="card-body">
+              <!-- Filter Section -->
+              <div class="row mb-4 g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Filter by Course</label>
+                  <select class="form-select" id="courseFilter">
+                    <option value="">All Courses</option>
+                    <% 
+                      const courses = [...new Set(activeStudents.map(s => s.studentProfile?.personalData?.course).filter(Boolean))];
+                      courses.forEach(course => {
+                    %>
+                      <option value="<%= course %>"><%= course %></option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Filter by Year & Section</label>
+                  <select class="form-select" id="yearSectionFilter">
+                    <option value="">All Year & Section</option>
+                    <% 
+                      const yearSections = [...new Set(activeStudents.map(s => s.studentProfile?.personalData?.yearSection).filter(Boolean))];
+                      yearSections.forEach(ys => {
+                    %>
+                      <option value="<%= ys %>"><%= ys %></option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Filter by Status</label>
+                  <select class="form-select" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Pending Review">Pending Review</option>
+                    <option value="Submitting">Submitting</option>
+                  </select>
+                </div>
+              </div>
+
               <div class="table-responsive">
                 <table class="table" id="reviewSubmissionsTable">
                   <thead>
@@ -188,24 +225,29 @@
                       <th>Student ID</th>
                       <th>Name</th>
                       <th>Course</th>
+                      <th>Year & Section</th>
                       <th>Documents Status</th>
                       <th>Overall Status</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="reviewSubmissionsBody">
                     <% activeStudents.forEach(student => { 
                       const profile = student.studentProfile || {};
                       const totalDocs = 9;
                       const submittedDocs = (profile.documents && profile.documents.length) || 0;
                     %>
-                      <tr>
+                      <tr class="student-row" 
+                          data-course="<%= profile.personalData?.course || '' %>"
+                          data-year-section="<%= profile.personalData?.yearSection || '' %>"
+                          data-status="<%= profile.overallStatus || 'Pending' %>">
                         <td><%= profile.personalData?.studentId || 'N/A' %></td>
                         <td>
                           <%= profile.personalData?.firstName || profile.personalData?.givenName || 'N/A' %>
                           <%= profile.personalData?.lastName || profile.personalData?.surname || '' %>
                         </td>
                         <td><%= profile.personalData?.course || 'N/A' %></td>
+                        <td><%= profile.personalData?.yearSection || 'N/A' %></td>
                         <td>
                           <div class="progress">
                             <div class="progress-bar" role="progressbar" style="width: <%= (submittedDocs/totalDocs * 100) %>%">
@@ -229,6 +271,11 @@
                     <% }) %>
                   </tbody>
                 </table>
+              </div>
+
+              <!-- No results message -->
+              <div id="noResultsMessage" class="text-center text-muted py-4" style="display: none;">
+                <p>No students match the selected filters.</p>
               </div>
             </div>
           </div>
@@ -592,4 +639,40 @@
       return value;
     }
   }
+
+  // Filter functionality for Review Submissions
+  function applyFilters() {
+    const courseFilter = document.getElementById('courseFilter').value;
+    const yearSectionFilter = document.getElementById('yearSectionFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    
+    const rows = document.querySelectorAll('#reviewSubmissionsTable tbody tr.student-row');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const coursMatch = !courseFilter || row.dataset.course === courseFilter;
+      const yearSectionMatch = !yearSectionFilter || row.dataset.yearSection === yearSectionFilter;
+      const statusMatch = !statusFilter || row.dataset.status === statusFilter;
+
+      if (coursMatch && yearSectionMatch && statusMatch) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Show/hide no results message
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    if (visibleCount === 0) {
+      noResultsMessage.style.display = 'block';
+    } else {
+      noResultsMessage.style.display = 'none';
+    }
+  }
+
+  // Attach filter event listeners
+  document.getElementById('courseFilter').addEventListener('change', applyFilters);
+  document.getElementById('yearSectionFilter').addEventListener('change', applyFilters);
+  document.getElementById('statusFilter').addEventListener('change', applyFilters);
 </script>
