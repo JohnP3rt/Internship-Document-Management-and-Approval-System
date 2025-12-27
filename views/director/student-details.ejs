@@ -17,43 +17,44 @@
 
     <div class="col-md-8">
       <div class="card mb-4">
-        <div class="card-header"><h5>Documents</h5></div>
+        <div class="card-header"><h5>Memorandum of Agreement (MOA)</h5></div>
         <div class="card-body">
-          <div class="table-responsive">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Doc</th>
-                  <th>Uploaded</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% profile.documents.forEach(doc => { %>
+          <% const moaDoc = profile.documents.find(doc => doc.docType === 'moa'); %>
+          <% if (moaDoc) { %>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
                   <tr>
-                    <td><%= doc.docType.replace(/_/g,' ').toUpperCase() %></td>
-                    <td><%= new Date(doc.uploadDate).toLocaleDateString() %></td>
+                    <th>Document</th>
+                    <th>Uploaded</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%= moaDoc.docType.replace(/_/g,' ').toUpperCase() %></td>
+                    <td><%= new Date(moaDoc.uploadDate).toLocaleDateString() %></td>
                     <td>
-                      <select class="form-select form-select-sm director-status-select" data-doc-id="<%= doc._id %>">
-                        <option value="Processing" <%= doc.status==='Processing' ? 'selected':'' %>>Processing</option>
-                        <option value="Revise" <%= doc.status==='Revise' ? 'selected':'' %>>Revise</option>
-                        <option value="Done" <%= doc.status==='Done' ? 'selected':'' %>>Done</option>
+                      <select class="form-select form-select-sm director-status-select" data-doc-id="<%= moaDoc._id %>">
+                        <option value="Processing" <%= moaDoc.status==='Processing' ? 'selected':'' %>>Processing</option>
+                        <option value="Revise" <%= moaDoc.status==='Revise' ? 'selected':'' %>>Revise</option>
+                        <option value="Done" <%= moaDoc.status==='Done' ? 'selected':'' %>>Done</option>
                       </select>
                     </td>
                     <td>
-                      <% if (doc.docType === 'moa') { %>
-                        <a href="/director/document/<%= doc._id %>/view" class="btn btn-sm btn-outline-primary" target="_blank">View MOA</a>
-                      <% } else { %>
-                        <a href="<%= doc.fileUrl %>" class="btn btn-sm btn-outline-secondary" target="_blank">View</a>
-                      <% } %>
-                      <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal" data-bs-target="#directorCommentsModal" data-doc-id="<%= doc._id %>" data-doc-title="<%= doc.docType.replace(/_/g, ' ').toUpperCase() %>">Comments</button>
+                      <a href="/director/document/<%= moaDoc._id %>/view" class="btn btn-sm btn-outline-primary" target="_blank">View MOA</a>
+                      <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal" data-bs-target="#directorCommentsModal" data-doc-id="<%= moaDoc._id %>" data-doc-title="<%= moaDoc.docType.replace(/_/g, ' ').toUpperCase() %>">Comments</button>
                     </td>
                   </tr>
-                <% }) %>
-              </tbody>
-            </table>
-          </div>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <div class="text-center text-muted py-4">
+              <p>MOA document not yet submitted.</p>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>

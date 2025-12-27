@@ -914,6 +914,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span>Document Status Guide</span>
                         <i class="bi bi-chevron-right"></i>
                     </button>
+                    <button class="faq-item" onclick="triggerFaq('Process for new company application')">
+                        <span>Process for New Company Application</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1609,12 +1613,12 @@ async function processMessage(messageText) {
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'chatbot-message user-message';
     userMsgDiv.innerHTML = `<div class="message-content">${escapeHtml(messageText)}</div>`;
-
     messagesContainer.appendChild(userMsgDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'chatbot-message bot-message';
+    loadingDiv.id = 'loading-message';
     loadingDiv.innerHTML = `<div class="message-content">...</div>`;
     messagesContainer.appendChild(loadingDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1626,11 +1630,13 @@ async function processMessage(messageText) {
             body: JSON.stringify({ message: messageText })
         });
 
-        const data = await response.json();
         if (!response.ok) throw new Error('API Error');
-
-        loadingDiv.remove();
         
+        const data = await response.json();
+        
+        const loadingEl = document.getElementById('loading-message');
+        if(loadingEl) loadingEl.remove();
+
         const botMsgDiv = document.createElement('div');
         botMsgDiv.className = 'chatbot-message bot-message';
         const botText = data.response || "I didn't quite get that.";
@@ -1638,7 +1644,9 @@ async function processMessage(messageText) {
         messagesContainer.appendChild(botMsgDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } catch (err) {
-        loadingDiv.remove();
+        const loadingEl = document.getElementById('loading-message');
+        if(loadingEl) loadingEl.remove();
+        
         const errorDiv = document.createElement('div');
         errorDiv.className = 'chatbot-message bot-message';
         errorDiv.innerHTML = `<div class="message-content">Connection error. Please try again.</div>`;
@@ -1649,11 +1657,19 @@ async function processMessage(messageText) {
 }
 
 document.getElementById('chatbotForm').addEventListener('submit', (e) => {
+    e.preventDefault();
     const input = document.getElementById('chatbotInput');
     const message = input.value.trim();
-    e.preventDefault();
-    toggleChatbot();
-    if (e.key === 'Escape') {document.addEventListener('keydown', (e) => {document.getElementById('chatbotOverlay').addEventListener('click', toggleChatbot);});    processMessage(message);    input.value = '';    if (!message) return;    const message = input.value.trim();    const input = document.getElementById('chatbotInput');    e.preventDefault();document.getElementById('chatbotForm').addEventListener('submit', (e) => {}    }        messagesContainer.scrollTop = messagesContainer.scrollHeight;    } finally {        messagesContainer.appendChild(errorDiv);        errorDiv.innerHTML = `<div class="message-content">Connection error. Please try again.</div>`;        errorDiv.className = 'chatbot-message bot-message';        const errorDiv = document.createElement('div');                if(loadingEl) loadingEl.remove();        const loadingEl = document.getElementById('loading-message');        console.error(err);    } catch (err) {        messagesContainer.appendChild(botMsgDiv);        botMsgDiv.innerHTML = `<div class="message-content">${escapeHtml(botText)}</div>`;        const botText = data.response || "I didn't quite get that.";        botMsgDiv.className = 'chatbot-message bot-message';        const botMsgDiv = document.createElement('div');        if(loadingEl) loadingEl.remove();        const loadingEl = document.getElementById('loading-message');                const data = await response.json();        if (!response.ok) throw new Error('API Error');                });            body: JSON.stringify({ message: messageText })            headers: { 'Content-Type': 'application/json' },            method: 'POST',        const response = await fetch('/student/chatbot', {    try {    messagesContainer.appendChild(loadingDiv);    loadingDiv.innerHTML = `<div class="message-content">...</div>`;    loadingDiv.id = 'loading-message';    loadingDiv.className = 'chatbot-message bot-message';    const loadingDiv = document.createElement('div');    messagesContainer.scrollTop = messagesContainer.scrollHeight;    messagesContainer.appendChild(userMsgDiv);    if (e.key === 'Escape' && document.getElementById('chatbotWidget').classList.contains('active')) {
+    if (!message) return;
+    
+    processMessage(message);
+    input.value = '';
+});
+
+document.getElementById('chatbotOverlay').addEventListener('click', toggleChatbot);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('chatbotWidget').classList.contains('active')) {
         toggleChatbot();
     }
 });

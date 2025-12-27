@@ -463,16 +463,45 @@ SYSTEM FEATURES FOR STUDENTS:
 - Comments: Receive and view feedback from coordinators on documents
 - Profile Management: Update personal information and upload profile picture
 - Announcements: View coordinator announcements and participate in discussions
+- Partnership Application: Apply for internship at partner companies/agencies
 
 KEY WORKFLOWS:
 1. Student uploads documents → Coordinator reviews → Director approves
 2. Status updates: Processing → Revise (if needed) → Done
 3. Comments system allows communication between students and coordinators
 
+NEW COMPANY APPLICATION PROCESS:
+When applying for an internship at a new company not in the pre-listed partnerships:
+
+**Step 1: Initial Talk with the Chosen Company**
+- Contact the company you're interested in for your internship
+- Discuss internship opportunities, duration, and learning objectives
+- Confirm the company's willingness to host an intern
+- Gather basic information about the internship position
+
+**Step 2: Asking for Details Regarding the Internship**
+- Request specific information about the internship role and responsibilities
+- Clarify the internship schedule and duration
+- Ask about the direct supervisor or mentor who will oversee your training
+- Understand the company's expectations and learning outcomes
+- Get contact information of the company representative
+
+**Step 3: Uploading the Memorandum of Agreement (MOA)**
+- After confirming details with the company, obtain their signed MOA
+- The MOA is a legal document that outlines the internship terms and conditions
+- Both you and the company must sign the MOA
+- Upload the MOA through the Application tab in your dashboard
+- Select "Others" and enter the company name and location
+- Provide the company's contact email if available
+- Submit your application for coordinator review
+
+The coordinator will review your application and MOA. Once approved, you can proceed with uploading the remaining required documents.
+
 USER INTERFACE:
-- Sidebar navigation with Home, Documents, and Profile tabs
+- Sidebar navigation with Home, Documents, Application, and Profile tabs
 - Home: View announcements and system news
 - Documents: Accordion view for Pre-Deployment, Legal Forms, and Post-OJT requirements
+- Application: Submit your internship partnership application
 - Profile: View and edit personal information
 
 IMPORTANT NOTES:
@@ -481,6 +510,7 @@ IMPORTANT NOTES:
 - Documents marked "Done" are approved by the coordinator
 - "Revise" status means the document needs corrections
 - Progress bars show completion percentage (Done documents only)
+- The MOA must be signed by both the student and company representative
 
 Answer questions about:
 - How to upload documents
@@ -493,8 +523,10 @@ Answer questions about:
 - Document requirements and formats
 - The OJT process flow
 - Announcements and coordinator communications
+- Process for new company application
+- MOA requirements and submission
 
-Be concise, friendly, and helpful. If asked about something not related to this OJT system, politely redirect to OJT-related topics.`;
+Be concise, friendly, and helpful. When asked about the "Process for New Company Application" or similar questions, provide detailed guidance on the three main steps. If asked about something not related to this OJT system, politely redirect to OJT-related topics.`;
 
         const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + apiKey;
         const response = await fetch(url, {
