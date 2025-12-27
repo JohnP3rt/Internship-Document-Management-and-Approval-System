@@ -20,6 +20,9 @@
       <a class="nav-link" id="nav-review-tab" data-bs-toggle="pill" href="#nav-review" role="tab" style="width: 100%; text-align: center;">
         <i class="bi bi-list-check"></i> Review Submissions
       </a>
+      <a class="nav-link" id="nav-applications-tab" data-bs-toggle="pill" href="#nav-applications" role="tab" style="width: 100%; text-align: center;">
+        <i class="bi bi-briefcase"></i> Applications
+      </a>
       <a class="nav-link" id="nav-requests-tab" data-bs-toggle="pill" href="#nav-requests" role="tab" style="width: 100%; text-align: center;">
         <i class="bi bi-person-plus"></i> Account Requests
       </a>
@@ -277,6 +280,117 @@
               <div id="noResultsMessage" class="text-center text-muted py-4" style="display: none;">
                 <p>No students match the selected filters.</p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applications Tab -->
+        <div class="tab-pane fade" id="nav-applications" role="tabpanel">
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4>Student Partnership Applications</h4>
+              <small class="text-muted">View student internship partnership applications</small>
+            </div>
+            <div class="card-body">
+              <% 
+                const agenciesMap = {};
+                activeStudents.forEach(student => {
+                  const partnership = student.studentProfile?.partnership;
+                  if (partnership && partnership.agency) {
+                    const agency = partnership.agency;
+                    if (!agenciesMap[agency]) {
+                      agenciesMap[agency] = [];
+                    }
+                    agenciesMap[agency].push({
+                      student: student,
+                      profile: student.studentProfile,
+                      partnership: partnership
+                    });
+                  }
+                });
+              %>
+
+              <% if (Object.keys(agenciesMap).length === 0) { %>
+                <div class="text-center text-muted py-4">
+                  <i class="bi bi-inbox display-1 mb-3"></i>
+                  <p>No partnership applications yet.</p>
+                </div>
+              <% } else { %>
+                <div class="row g-4">
+                  <% Object.entries(agenciesMap).forEach(([agency, students]) => { %>
+                    <div class="col-12">
+                      <div class="card border-start border-primary border-4">
+                        <div class="card-header bg-light">
+                          <h5 class="card-title mb-0">
+                            <i class="bi bi-building me-2"></i><%= agency %>
+                            <span class="badge bg-primary float-end"><%= students.length %> student(s)</span>
+                          </h5>
+                        </div>
+                        <div class="card-body">
+                          <div class="row g-3">
+                            <% students.forEach(app => { %>
+                              <div class="col-md-6">
+                                <div class="card h-100 shadow-sm">
+                                  <div class="card-header bg-white border-0 pb-0">
+                                    <div class="d-flex align-items-center">
+                                      <img src="<%= app.profile.personalData?.profilePicture || '/images/default-avatar.png' %>" 
+                                           class="rounded-circle me-3" 
+                                           style="width: 48px; height: 48px; object-fit: cover;">
+                                      <div>
+                                        <h6 class="mb-0">
+                                          <%= app.profile.personalData?.firstName || app.profile.personalData?.givenName %>
+                                          <%= app.profile.personalData?.lastName || app.profile.personalData?.surname %>
+                                        </h6>
+                                        <small class="text-muted">
+                                          ID: <%= app.profile.personalData?.studentId %>
+                                        </small>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="card-body">
+                                    <div class="mb-3">
+                                      <label class="text-muted small">Internship Information</label>
+                                      <div class="bg-light p-3 rounded">
+                                        <p class="mb-2">
+                                          <strong>Agency:</strong> <%= app.partnership.agency %>
+                                        </p>
+                                        <p class="mb-2">
+                                          <strong>Location:</strong> <%= app.partnership.location %>
+                                        </p>
+                                        <% if (app.partnership.email) { %>
+                                          <p class="mb-0">
+                                            <strong>Contact Email:</strong> 
+                                            <a href="mailto:<%= app.partnership.email %>"><%= app.partnership.email %></a>
+                                          </p>
+                                        <% } %>
+                                      </div>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label class="text-muted small">Course & Year</label>
+                                      <p class="mb-0">
+                                        <%= app.profile.personalData?.course %> - <%= app.profile.personalData?.yearSection %>
+                                      </p>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label class="text-muted small">Applied On</label>
+                                      <p class="mb-0">
+                                        <%= new Date(app.partnership.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
+                                      </p>
+                                    </div>
+                                    <a href="/coordinator/student-details/<%= app.student._id %>" class="btn btn-primary btn-sm w-100">
+                                      <i class="bi bi-eye me-2"></i> View Full Profile
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
+                            <% }) %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } %>
             </div>
           </div>
         </div>

@@ -220,7 +220,7 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
         const activeStudents = await User.find({ role: 'student', status: 'active' })
           .populate({
             path: 'studentProfile',
-            select: 'personalData documents overallStatus'
+            select: 'personalData documents overallStatus partnership'
           });
 
         let announcements = await Announcement.find()

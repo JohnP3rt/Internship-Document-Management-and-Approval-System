@@ -86,6 +86,13 @@ const StudentProfileSchema = new Schema({
       }
     }]
   }],
+  partnership: {
+    agency: { type: String, default: '' },
+    location: { type: String, default: '' },
+    email: { type: String, default: '' },
+    customAgency: { type: String, default: '' },
+    appliedAt: { type: Date, default: null }
+  },
   coordinatorChecklist: {
     clearance_checked: { type: Boolean, default: false },
     moa_checked: { type: Boolean, default: false },

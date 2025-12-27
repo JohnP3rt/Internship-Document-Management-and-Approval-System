@@ -14,6 +14,9 @@
             <a class="nav-link" href="#documents" data-bs-toggle="pill" style="width: 100%; text-align: center;">
                 <i class="bi bi-file-earmark-text"></i> Documents
             </a>
+            <a class="nav-link" href="#application" data-bs-toggle="pill" style="width: 100%; text-align: center;">
+                <i class="bi bi-briefcase"></i> Application
+            </a>
             <a class="nav-link" href="#profile" data-bs-toggle="pill" style="width: 100%; text-align: center;">
                 <i class="bi bi-person"></i> Profile
             </a>
@@ -396,6 +399,73 @@
                     </div>
                 </div>
 
+                <!-- Application Tab -->
+                <div class="tab-pane fade" id="application">
+            <h4 class="mb-4">Internship Partnership Application</h4>
+            
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <% if (profile.partnership && profile.partnership.appliedAt) { %>
+                                <div class="alert alert-success mb-4">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <strong>Application Submitted</strong>
+                                    <p class="mb-0 mt-2">
+                                        Applied on: <%= new Date(profile.partnership.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                                    </p>
+                                </div>
+                            <% } %>
+
+                            <form id="partnershipForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Partnership/Agency</label>
+                                    <select name="agency" class="form-select" id="agencySelect" required>
+                                        <option value="">Choose a partnership...</option>
+                                        <option value="B&M Fiber-Tech Fiber Optics Installation">B&M Fiber-Tech Fiber Optics Installation</option>
+                                        <option value="Bureau of Internal Revenue-CAR">Bureau of Internal Revenue-CAR</option>
+                                        <option value="DedEd Schools Division Office of Urdaneta City">DedEd Schools Division Office of Urdaneta City</option>
+                                        <option value="Department of Agrarian Reform">Department of Agrarian Reform</option>
+                                        <option value="Department of Environment and Natural Resources-CENRO Baguio City">Department of Environment and Natural Resources-CENRO Baguio City</option>
+                                        <option value="Department of Information and Communication Technology-Pangasinan">Department of Information and Communication Technology-Pangasinan</option>
+                                        <option value="Local Government Unit Of Manaoag">Local Government Unit Of Manaoag</option>
+                                        <option value="Local Government Unit Of Sual">Local Government Unit Of Sual</option>
+                                        <option value="Makerspace Innovhub">Makerspace Innovhub</option>
+                                        <option value="National Irrigation Administration PIMO">National Irrigation Administration PIMO</option>
+                                        <option value="Offshore Concept BPO Services, Inc. (FullSuite)">Offshore Concept BPO Services, Inc. (FullSuite)</option>
+                                        <option value="PruLife UK - Urdaneta Branch">PruLife UK - Urdaneta Branch</option>
+                                        <option value="PSU-Information and Communication Technology Management Office (Main)">PSU-Information and Communication Technology Management Office (Main)</option>
+                                        <option value="Villasis Water District">Villasis Water District</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3" id="customAgencyDiv" style="display: none;">
+                                    <label class="form-label">Partnership/Agency Name</label>
+                                    <input type="text" name="customAgency" class="form-control" placeholder="Enter the partnership/agency name">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" name="location" class="form-control" placeholder="Enter the location/address" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Partnership Email (Optional)</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Enter partnership email">
+                                </div>
+
+                                <div class="d-flex justify-content-end gap-2">
+                                    <button type="reset" class="btn btn-secondary">Clear</button>
+                                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
                 <!-- Profile Tab -->
             <div class="tab-pane fade" id="profile">
             <div class="profile-card bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -506,6 +576,58 @@
                     </div>
                 </div>
                 </div>
+
+                <% if (profile.partnership && profile.partnership.agency) { %>
+                  <div class="col-12">
+                    <div class="card shadow-sm">
+                      <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                          <i class="bi bi-briefcase me-2"></i>
+                          Internship Partnership Application
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="text-muted small">Partnership/Agency</label>
+                              <p class="mb-0"><strong><%= profile.partnership.agency %></strong></p>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="text-muted small">Location</label>
+                              <p class="mb-0"><strong><%= profile.partnership.location %></strong></p>
+                            </div>
+                          </div>
+                        </div>
+                        <% if (profile.partnership.email) { %>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="mb-3">
+                                <label class="text-muted small">Partnership Email</label>
+                                <p class="mb-0">
+                                  <a href="mailto:<%= profile.partnership.email %>"><%= profile.partnership.email %></a>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        <% } %>
+                        <div class="row">
+                          <div class="col-12">
+                            <label class="text-muted small">Applied On</label>
+                            <p class="mb-0">
+                              <%= new Date(profile.partnership.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                            </p>
+                          </div>
+                        </div>
+                        <a href="#application" data-bs-toggle="pill" class="btn btn-primary btn-sm mt-3">
+                          <i class="bi bi-pencil-square me-2"></i> Edit Application
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
                 </div>
                 </div>
             </div>
@@ -677,7 +799,60 @@ document.querySelectorAll('.comment-form').forEach(form => {
     });
 });
 
+document.getElementById('agencySelect').addEventListener('change', function(e) {
+    const customAgencyDiv = document.getElementById('customAgencyDiv');
+    if (e.target.value === 'Others') {
+        customAgencyDiv.style.display = 'block';
+        customAgencyDiv.querySelector('input').setAttribute('required', 'required');
+    } else {
+        customAgencyDiv.style.display = 'none';
+        customAgencyDiv.querySelector('input').removeAttribute('required');
+    }
+});
 
+document.getElementById('partnershipForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const agencySelect = document.getElementById('agencySelect');
+    if (!agencySelect.value) {
+        alert('Please select a partnership');
+        return;
+    }
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+
+    if (data.agency === 'Others' && !data.customAgency) {
+        alert('Please enter a partnership name');
+        return;
+    }
+
+    try {
+        const response = await fetch('/student/apply-partnership', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to submit application');
+        }
+
+        alert('Partnership application submitted successfully!');
+        window.location.reload();
+    } catch (err) {
+        alert('Error: ' + err.message);
+    }
+});
+
+// Initialize custom agency field on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const agencySelect = document.getElementById('agencySelect');
+    if (agencySelect && agencySelect.value === 'Others') {
+        document.getElementById('customAgencyDiv').style.display = 'block';
+    }
+});
 </script>
 <div class="chatbot-launcher">
     <div class="launcher-bubble" id="launcherBubble">
@@ -1434,14 +1609,15 @@ async function processMessage(messageText) {
     const userMsgDiv = document.createElement('div');
     userMsgDiv.className = 'chatbot-message user-message';
     userMsgDiv.innerHTML = `<div class="message-content">${escapeHtml(messageText)}</div>`;
+
     messagesContainer.appendChild(userMsgDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'chatbot-message bot-message';
-    loadingDiv.id = 'loading-message';
     loadingDiv.innerHTML = `<div class="message-content">...</div>`;
     messagesContainer.appendChild(loadingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     try {
         const response = await fetch('/student/chatbot', {
@@ -1449,45 +1625,35 @@ async function processMessage(messageText) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: messageText })
         });
-        
-        if (!response.ok) throw new Error('API Error');
-        const data = await response.json();
-        
-        const loadingEl = document.getElementById('loading-message');
-        if(loadingEl) loadingEl.remove();
 
+        const data = await response.json();
+        if (!response.ok) throw new Error('API Error');
+
+        loadingDiv.remove();
+        
         const botMsgDiv = document.createElement('div');
         botMsgDiv.className = 'chatbot-message bot-message';
         const botText = data.response || "I didn't quite get that.";
         botMsgDiv.innerHTML = `<div class="message-content">${escapeHtml(botText)}</div>`;
         messagesContainer.appendChild(botMsgDiv);
-
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     } catch (err) {
-        console.error(err);
-        const loadingEl = document.getElementById('loading-message');
-        if(loadingEl) loadingEl.remove();
-        
+        loadingDiv.remove();
         const errorDiv = document.createElement('div');
         errorDiv.className = 'chatbot-message bot-message';
         errorDiv.innerHTML = `<div class="message-content">Connection error. Please try again.</div>`;
         messagesContainer.appendChild(errorDiv);
-    } finally {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        console.error(err);
     }
 }
 
 document.getElementById('chatbotForm').addEventListener('submit', (e) => {
-    e.preventDefault();
     const input = document.getElementById('chatbotInput');
     const message = input.value.trim();
-    if (!message) return;
-    input.value = '';
-    processMessage(message);
-});
-
-document.getElementById('chatbotOverlay').addEventListener('click', toggleChatbot);
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && document.getElementById('chatbotWidget').classList.contains('active')) {
+    e.preventDefault();
+    toggleChatbot();
+    if (e.key === 'Escape') {document.addEventListener('keydown', (e) => {document.getElementById('chatbotOverlay').addEventListener('click', toggleChatbot);});    processMessage(message);    input.value = '';    if (!message) return;    const message = input.value.trim();    const input = document.getElementById('chatbotInput');    e.preventDefault();document.getElementById('chatbotForm').addEventListener('submit', (e) => {}    }        messagesContainer.scrollTop = messagesContainer.scrollHeight;    } finally {        messagesContainer.appendChild(errorDiv);        errorDiv.innerHTML = `<div class="message-content">Connection error. Please try again.</div>`;        errorDiv.className = 'chatbot-message bot-message';        const errorDiv = document.createElement('div');                if(loadingEl) loadingEl.remove();        const loadingEl = document.getElementById('loading-message');        console.error(err);    } catch (err) {        messagesContainer.appendChild(botMsgDiv);        botMsgDiv.innerHTML = `<div class="message-content">${escapeHtml(botText)}</div>`;        const botText = data.response || "I didn't quite get that.";        botMsgDiv.className = 'chatbot-message bot-message';        const botMsgDiv = document.createElement('div');        if(loadingEl) loadingEl.remove();        const loadingEl = document.getElementById('loading-message');                const data = await response.json();        if (!response.ok) throw new Error('API Error');                });            body: JSON.stringify({ message: messageText })            headers: { 'Content-Type': 'application/json' },            method: 'POST',        const response = await fetch('/student/chatbot', {    try {    messagesContainer.appendChild(loadingDiv);    loadingDiv.innerHTML = `<div class="message-content">...</div>`;    loadingDiv.id = 'loading-message';    loadingDiv.className = 'chatbot-message bot-message';    const loadingDiv = document.createElement('div');    messagesContainer.scrollTop = messagesContainer.scrollHeight;    messagesContainer.appendChild(userMsgDiv);    if (e.key === 'Escape' && document.getElementById('chatbotWidget').classList.contains('active')) {
         toggleChatbot();
     }
 });

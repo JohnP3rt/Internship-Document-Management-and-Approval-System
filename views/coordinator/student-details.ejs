@@ -23,6 +23,26 @@
           <div class="mb-2"><strong>Year & Section:</strong> <%= student.studentProfile.personalData.yearSection %></div>
           <div class="mb-2"><strong>Contact:</strong> <%= student.studentProfile.personalData.contactNumber %></div>
           <div class="mb-2"><strong>Email:</strong> <%= student.email %></div>
+          
+          <% if (student.studentProfile.partnership && student.studentProfile.partnership.agency) { %>
+            <hr>
+            <div class="mt-3">
+              <h6 class="fw-bold">Internship Partnership</h6>
+              <div class="bg-light p-3 rounded">
+                <p class="mb-2">
+                  <strong>Agency:</strong> <%= student.studentProfile.partnership.agency %>
+                </p>
+                <p class="mb-2">
+                  <strong>Location:</strong> <%= student.studentProfile.partnership.location %>
+                </p>
+                <% if (student.studentProfile.partnership.email) { %>
+                  <p class="mb-0">
+                    <strong>Email:</strong> <a href="mailto:<%= student.studentProfile.partnership.email %>"><%= student.studentProfile.partnership.email %></a>
+                  </p>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
         </div>
       </div>
     </div>

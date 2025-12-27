@@ -538,4 +538,34 @@ Be concise, friendly, and helpful. If asked about something not related to this 
         res.status(500).json({ error: 'Chatbot service unavailable' });
     }
 });
+
+router.post('/apply-partnership', auth('student'), async (req, res) => {
+    try {
+        const { agency, location, email, customAgency } = req.body;
+
+        if (!agency || !location) {
+            return res.status(400).json({ error: 'Agency and location are required' });
+        }
+
+        const profile = await StudentProfile.findOne({ user: req.user._id });
+        if (!profile) {
+            return res.status(404).json({ error: 'Student profile not found' });
+        }
+
+        profile.partnership = {
+            agency: agency === 'Others' ? customAgency : agency,
+            location: location.trim(),
+            email: email ? email.trim() : '',
+            customAgency: agency === 'Others' ? customAgency : '',
+            appliedAt: new Date()
+        };
+
+        await profile.save();
+        res.json({ message: 'Partnership application submitted successfully', partnership: profile.partnership });
+    } catch (err) {
+        console.error('Apply partnership error:', err);
+        res.status(500).json({ error: 'Failed to submit partnership application' });
+    }
+});
+
 module.exports = router;
