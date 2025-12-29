@@ -761,7 +761,7 @@ document.querySelectorAll('.comment-form').forEach(form => {
         if (!input.value.trim()) return;
 
         try {
-            const response = await fetch(`/coordinator/announcement/${announcementId}/comment`, {
+            const response = await fetch(`/student/announcement/${announcementId}/comment`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json'

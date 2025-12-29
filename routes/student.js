@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { StudentProfile, User, Announcement } = require('../models');
+const { StudentProfile, User, Announcement, Comment } = require('../models');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
@@ -597,6 +597,60 @@ router.post('/apply-partnership', auth('student'), async (req, res) => {
     } catch (err) {
         console.error('Apply partnership error:', err);
         res.status(500).json({ error: 'Failed to submit partnership application' });
+    }
+});
+
+router.post('/announcement/:id/comment', auth('student'), async (req, res) => {
+    try {
+        const { content } = req.body;
+        const announcementId = req.params.id;
+
+        const comment = new Comment({
+            content,
+            author: req.user._id,
+            announcement: announcementId,
+            createdAt: new Date()
+        });
+
+        await comment.save();
+
+        const announcement = await Announcement.findById(announcementId);
+        announcement.comments.push(comment._id);
+        await announcement.save();
+
+        const populatedComment = await Comment.findById(comment._id)
+            .populate({
+                path: 'author',
+                select: 'name profilePicture email studentProfile',
+                populate: { path: 'studentProfile', select: 'personalData' }
+            })
+            .lean();
+
+        const authorObj = populatedComment.author || {};
+        let fullName = authorObj.name;
+        const pd = authorObj.studentProfile?.personalData;
+        if (!fullName && pd) {
+            const parts = [
+                pd.givenName || pd.firstName,
+                pd.middleName,
+                pd.surname || pd.lastName
+            ].filter(Boolean);
+            fullName = parts.join(' ');
+        }
+        const profilePic = authorObj.profilePicture || pd?.profilePicture || '/images/default-avatar.png';
+
+        res.json({
+            ...populatedComment,
+            author: {
+                name: fullName || authorObj.email,
+                profilePicture: profilePic,
+                email: authorObj.email
+            },
+            createdAt: populatedComment.createdAt
+        });
+    } catch (err) {
+        console.error('Comment creation error:', err);
+        res.status(500).json({ error: 'Failed to create comment' });
     }
 });
 

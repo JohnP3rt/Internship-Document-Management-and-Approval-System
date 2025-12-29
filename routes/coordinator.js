@@ -345,7 +345,6 @@ router.post('/announcement/:id/comment', auth(['coordinator', 'student']), async
             .lean();
 
         const authorObj = populatedComment.author || {};
-      c
         let fullName = authorObj.name;
         const pd = authorObj.studentProfile?.personalData;
         if (!fullName && pd) {
@@ -456,7 +455,7 @@ router.delete('/:id', auth('coordinator'), async (req, res) => {
       return res.status(404).json({ error: 'Coordinator not found' });
     }
 
-    await user.remove();
+    await User.findByIdAndDelete(targetId);
     res.json({ message: 'Coordinator deleted' });
   } catch (err) {
     console.error('Delete coordinator error:', err);

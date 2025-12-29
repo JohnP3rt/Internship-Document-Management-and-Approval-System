@@ -152,7 +152,6 @@
                 </div>
             `).join('');
 
-            // Attach delete listeners
             document.querySelectorAll('.delete-comment-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     if (!confirm('Delete this comment?')) return;

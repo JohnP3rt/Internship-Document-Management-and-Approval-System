@@ -97,7 +97,6 @@
   </div>
 </div>
 
-<!-- Coordinator Comments Modal -->
 <div class="modal fade" id="coordinatorCommentsModal" tabindex="-1" aria-labelledby="coordinatorModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -147,7 +146,6 @@ document.querySelectorAll('.status-select').forEach(select => {
     });
 });
 
-// Handle modal show event - fetch fresh comments
 document.getElementById('coordinatorCommentsModal').addEventListener('show.bs.modal', async function (e) {
     const button = e.relatedTarget;
     const docId = button.getAttribute('data-doc-id');
@@ -188,7 +186,6 @@ document.getElementById('coordinatorCommentsModal').addEventListener('show.bs.mo
                 </div>
             `).join('');
 
-            // Attach delete listeners
             document.querySelectorAll('.delete-comment-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     if (!confirm('Delete this comment?')) return;
