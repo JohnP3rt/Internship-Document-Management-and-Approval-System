@@ -19,14 +19,8 @@
 
         <div class="account-btns">
           <div class="mt-2">
-            <a href="/coordinator/edit-profile" class="btn btn-outline-primary edit-btn">
-              <img src="/images/icons/edit-blue.svg" alt="Edit" style="width: 14px; height: auto;">
-              <span>Edit</span>
-            </a>
-          </div>
-          <div class="mt-2">
             <a href="#" onclick="handleLogout(event)" class="btn btn-outline-primary edit-btn">
-              <img src="/images/icons/door-icon.svg" alt="Edit" style="width: 14px; height: auto;">
+              <img src="/images/icons/door-icon.svg" alt="Logout" style="width: 14px; height: auto;">
               <span>Logout</span>
             </a>
           </div>
@@ -36,70 +30,341 @@
     </div>
 
     <div class="nav flex-column nav-pills p-3 pt-0" id="coordinatorSidebar" role="tablist" aria-orientation="vertical">
-
       <a class="nav-link active d-flex align-items-center" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home"
         role="tab">
         <img src="/images/icons/home-icon.svg" alt="Home" style="width: 20px; height: auto;" class="me-3">
         <span>Home</span>
       </a>
-
     </div>
 
   </div>
 
-  <div class="flex-grow-1" style="margin-left: 280px; padding: 2rem;">
+  <div class="flex-grow-1" style="margin-left: 280px; padding: 0;">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="mb-4 section-title">Director Dashboard</h4>
-    </div>
+    <!-- Main Content -->
+    <div class="container-fluid p-4">
+      <!-- Summary Stats -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-6">
+          <div class="stat-card card border-0 shadow-sm rounded-3 p-4">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon bg-primary bg-opacity-10 rounded-circle p-3 me-3"
+                style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-file-check text-primary fs-5"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Total Profiles</small>
+                <h4 class="mb-0 fw-bold"><%= profiles ? profiles.length : 0 %></h4>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <div class="card mb-4">
-      <div class="card-header">
-        <h5 class="mb-0">Profiles Pending Director Review</h5>
+        <div class="col-md-6">
+          <div class="stat-card card border-0 shadow-sm rounded-3 p-4">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon bg-warning bg-opacity-10 rounded-circle p-3 me-3"
+                style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-hourglass-split text-warning fs-5"></i>
+              </div>
+              <div>
+                <small class="text-muted d-block">Pending Approval</small>
+                <h4 class="mb-0 fw-bold"><%
+                  const pendingCount = profiles ? profiles.filter(p => p.overallStatus !== 'Completed').length : 0;
+                  %>
+                  <%= pendingCount %>
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <% if (profiles && profiles.length) { %>
+
+      <!-- Filters Section -->
+      <div class="filter-section mb-4">
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-body p-4">
+            <h6 class="text-muted fw-bold mb-3 d-flex align-items-center">
+              <i class="bi bi-funnel me-2"></i>Filter Results
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Filter by Course</label>
+                <select class="form-select form-select-lg border-0 bg-light rounded-3" id="courseFilter">
+                  <option value="">All Courses</option>
+                  <% const courses=[...new Set(profiles?.map(p=> p.personalData?.course).filter(Boolean) || [])];
+                    courses.forEach(course => { %>
+                  <option value="<%= course %>">
+                    <%= course %>
+                  </option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Filter by Year & Section</label>
+                <select class="form-select form-select-lg border-0 bg-light rounded-3" id="yearSectionFilter">
+                  <option value="">All Year & Section</option>
+                  <% const yearSections=[...new Set(profiles?.map(p=> p.personalData?.yearSection).filter(Boolean) || [])];
+                    yearSections.forEach(ys => { %>
+                  <option value="<%= ys %>">
+                    <%= ys %>
+                  </option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Filter by Company</label>
+                <select class="form-select form-select-lg border-0 bg-light rounded-3" id="companyFilter">
+                  <option value="">All Companies</option>
+                  <% const companies=[...new Set(profiles?.map(p=> p.partnership?.agency).filter(Boolean) || [])];
+                    companies.forEach(company => { %>
+                  <option value="<%= company %>">
+                    <%= company %>
+                  </option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex gap-2">
+              <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" id="resetFilters">
+                <i class="bi bi-arrow-clockwise me-2"></i>Reset Filters
+              </button>
+              <span class="ms-auto text-muted small pt-2">
+                <strong id="filteredCount"><%= profiles ? profiles.length : 0 %></strong> profiles found
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profiles Table Section -->
+      <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="card-header bg-light border-0 p-4">
+          <h5 class="mb-0 fw-bold d-flex align-items-center">
+            <i class="bi bi-file-earmark-check text-primary me-2"></i>Profiles Pending Director Review
+          </h5>
+        </div>
+
+        <div class="card-body p-0">
+          <% if (profiles && profiles.length) { %>
           <div class="table-responsive">
-            <table class="table">
-              <thead>
+            <table class="table table-hover mb-0" id="profilesTable">
+              <thead class="bg-light">
                 <tr>
-                  <th>Student ID</th>
-                  <th>Name</th>
-                  <th>Course</th>
-                  <th>Overall Status</th>
-                  <th>Actions</th>
+                  <th class="ps-4 text-muted fw-bold small">Course</th>
+                  <th class="text-muted fw-bold small">Year & Section</th>
+                  <th class="text-muted fw-bold small">Company</th>
+                  <th class="text-muted fw-bold small">Overall Status</th>
+                  <th class="text-end pe-4 text-muted fw-bold small">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <% profiles.forEach(p=> { %>
-                  <tr>
-                    <td>
-                      <%= p.personalData?.studentId || 'N/A' %>
-                    </td>
-                    <td>
-                      <%= p.personalData?.givenName || p.personalData?.firstName %>
-                        <%= p.personalData?.surname || p.personalData?.lastName %>
-                    </td>
-                    <td>
-                      <%= p.personalData?.course || 'N/A' %>
-                    </td>
-                    <td><span class="badge bg-warning text-dark">
-                        <%= p.overallStatus || 'Pending' %>
-                      </span></td>
-                    <td>
-                      <a href="/director/student-view/<%= p._id %>" class="btn btn-sm btn-primary">View</a>
-                    </td>
-                  </tr>
-                  <% }) %>
+                <tr class="profile-row"
+                  data-course="<%= p.personalData?.course || '' %>"
+                  data-year-section="<%= p.personalData?.yearSection || '' %>"
+                  data-company="<%= p.partnership?.agency || '' %>">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3"
+                        style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-book text-primary"></i>
+                      </div>
+                      <div>
+                        <h6 class="mb-0 fw-bold"><%= p.personalData?.course || 'N/A' %></h6>
+                        <small class="text-muted">Program</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="fw-bold text-dark">
+                      <%= p.personalData?.yearSection || 'N/A' %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <i class="bi bi-building text-info me-2"></i>
+                      <div>
+                        <small class="fw-bold"><%= p.partnership?.agency || 'Not Applied' %></small>
+                        <% if (p.partnership?.location) { %>
+                        <br><small class="text-muted"><%= p.partnership.location %></small>
+                        <% } %>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill <%=
+                      p.overallStatus === 'Completed' ? 'bg-success' :
+                      p.overallStatus === 'Pending Review' ? 'bg-warning' :
+                      'bg-info' %>">
+                    <i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i>
+                    <%= p.overallStatus || 'Pending' %>
+                    </span>
+                  </td>
+                  <td class="text-end pe-4">
+                    <a href="/director/student-view/<%= p._id %>" class="btn btn-primary btn-sm rounded-pill px-4 d-inline-flex align-items-center">
+                      <i class="bi bi-arrow-right me-2"></i>View Details
+                    </a>
+                  </td>
+                </tr>
+                <% }) %>
               </tbody>
             </table>
           </div>
-          <% } else { %>
-            <div class="text-center text-muted py-4">
-              No profiles awaiting director review.
+
+          <!-- Empty State for Filters -->
+          <div id="noResultsMessage" class="text-center py-5 d-none">
+            <div class="mb-3">
+              <i class="bi bi-search display-1 text-muted"></i>
             </div>
-            <% } %>
+            <h5 class="text-muted mb-2">No profiles match your filters</h5>
+            <p class="text-muted small mb-3">Try adjusting your filter criteria</p>
+            <button class="btn btn-outline-primary btn-sm rounded-pill" onclick="resetAllFilters()">
+              <i class="bi bi-arrow-clockwise me-2"></i>Reset Filters
+            </button>
+          </div>
+
+          <% } else { %>
+          <!-- Empty State - No Profiles -->
+          <div class="text-center py-5">
+            <div class="mb-3">
+              <i class="bi bi-inbox display-1 text-muted"></i>
+            </div>
+            <h5 class="text-muted mb-2">No profiles awaiting director review</h5>
+            <p class="text-muted small">All student profiles have been reviewed</p>
+          </div>
+          <% } %>
+        </div>
       </div>
     </div>
-
   </div>
+</div>
+
+<script>
+  // Filtering functionality
+  const courseFilter = document.getElementById('courseFilter');
+  const yearSectionFilter = document.getElementById('yearSectionFilter');
+  const companyFilter = document.getElementById('companyFilter');
+  const resetBtn = document.getElementById('resetFilters');
+  const profileTable = document.getElementById('profilesTable');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const filteredCount = document.getElementById('filteredCount');
+
+  function applyFilters() {
+    const courseValue = courseFilter?.value || '';
+    const yearSectionValue = yearSectionFilter?.value || '';
+    const companyValue = companyFilter?.value || '';
+
+    const rows = profileTable?.querySelectorAll('tbody tr.profile-row') || [];
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const rowCourse = row.dataset.course;
+      const rowYearSection = row.dataset.yearSection;
+      const rowCompany = row.dataset.company;
+
+      const courseMatch = !courseValue || rowCourse === courseValue;
+      const yearSectionMatch = !yearSectionValue || rowYearSection === yearSectionValue;
+      const companyMatch = !companyValue || rowCompany === companyValue;
+
+      if (courseMatch && yearSectionMatch && companyMatch) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    // Update display
+    if (profileTable) {
+      if (visibleCount === 0) {
+        profileTable.parentElement.style.display = 'none';
+        noResultsMessage.classList.remove('d-none');
+      } else {
+        profileTable.parentElement.style.display = '';
+        noResultsMessage.classList.add('d-none');
+      }
+    }
+
+    if (filteredCount) {
+      filteredCount.textContent = visibleCount;
+    }
+  }
+
+  function resetAllFilters() {
+    if (courseFilter) courseFilter.value = '';
+    if (yearSectionFilter) yearSectionFilter.value = '';
+    if (companyFilter) companyFilter.value = '';
+    applyFilters();
+  }
+
+  // Event listeners
+  courseFilter?.addEventListener('change', applyFilters);
+  yearSectionFilter?.addEventListener('change', applyFilters);
+  companyFilter?.addEventListener('change', applyFilters);
+  resetBtn?.addEventListener('click', resetAllFilters);
+
+  // Initialize
+  applyFilters();
+</script>
+
+<style>
+  .filter-section {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .profile-row {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+  }
+
+  .profile-row:hover {
+    background-color: #f9f9fb;
+  }
+
+  .stat-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .form-select-lg {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .rounded-3 {
+    border-radius: 1rem !important;
+  }
+
+  .btn-sm {
+    font-weight: 500;
+  }
+
+  table thead {
+    position: sticky;
+    top: 0;
+  }
+
+  .badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+</style>

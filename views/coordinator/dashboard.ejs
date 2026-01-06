@@ -38,27 +38,32 @@
     <div class="nav flex-column nav-pills p-3 pt-0" id="coordinatorSidebar" role="tablist" aria-orientation="vertical">
       <a class="nav-link active" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/home-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <img src="/images/icons/home-icon.svg" alt="Home" style="width: 150px; height: auto;">
         <p>Home</p>
       </a>
       <a class="nav-link" id="nav-review-tab" data-bs-toggle="pill" href="#nav-review" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/documents-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <img src="/images/icons/documents-icon.svg" alt="Documents" style="width: 150px; height: auto;">
         <p>Review submissions</p>
       </a>
       <a class="nav-link" id="nav-applications-tab" data-bs-toggle="pill" href="#nav-applications" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/megaphone-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <img src="/images/icons/megaphone-icon.svg" alt="Applications" style="width: 150px; height: auto;">
         <p>Applications</p>
+      </a>
+      <a class="nav-link" id="nav-reports-tab" data-bs-toggle="pill" href="#nav-reports" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/reports-icon.svg" alt="Reports" style="width: 150px; height: auto;">
+        <p>Reports</p>
       </a>
       <a class="nav-link" id="nav-requests-tab" data-bs-toggle="pill" href="#nav-requests" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/confirm-people.svg" alt="Logo" style="width: 150px; height: auto;">
+        <img src="/images/icons/confirm-people.svg" alt="Requests" style="width: 150px; height: auto;">
         <p>Account requests</p>
       </a>
       <a class="nav-link" id="nav-coordinators-tab" data-bs-toggle="pill" href="#nav-coordinators" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/add-people.svg" alt="Logo" style="width: 150px; height: auto;">
+        <img src="/images/icons/add-people.svg" alt="Coordinators" style="width: 150px; height: auto;">
         <p>Add coordinators</p>
       </a>
     </div>
@@ -537,6 +542,7 @@
                     <tr>
                       <th>Email</th>
                       <th>Name</th>
+                      <th>Campus</th>
                       <th>Status</th>
                       <th>Actions</th>
                     </tr>
@@ -550,6 +556,9 @@
                           </td>
                           <td>
                             <%= c.name || '-' %>
+                          </td>
+                          <td>
+                            <%= c.campus || 'Not specified' %>
                           </td>
                           <td>
                             <%= c.status || 'active' %>
@@ -567,6 +576,214 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-pane fade" id="nav-reports" role="tabpanel">
+          <h4 class="mb-4 section-title">
+            <i class="bi bi-bar-chart me-2"></i>Internship Reports & Statistics
+          </h4>
+
+          <!-- Overview Statistics -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-primary bg-opacity-10 rounded-circle p-3 me-3"
+                    style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-building text-primary fs-5"></i>
+                  </div>
+                  <div>
+                    <small class="text-muted d-block">Total Partner Companies</small>
+                    <h4 class="mb-0 fw-bold"><%= reportsData.totalCompanies %></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card border-0 shadow-sm rounded-3 p-4">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-success bg-opacity-10 rounded-circle p-3 me-3"
+                    style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-people text-success fs-5"></i>
+                  </div>
+                  <div>
+                    <small class="text-muted d-block">Students Currently Interning</small>
+                    <h4 class="mb-0 fw-bold"><%= reportsData.totalStudentsInterning %></h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Companies List Section -->
+          <div class="card border-0 shadow-sm rounded-3 mb-4">
+            <div class="card-header bg-light border-0 p-4">
+              <h5 class="mb-0 fw-bold d-flex align-items-center">
+                <i class="bi bi-building text-primary me-2"></i>Partner Companies & Student Interns
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <% if (reportsData.companies && reportsData.companies.length > 0) { %>
+                <div class="row g-3">
+                  <% reportsData.companies.forEach(company => { %>
+                    <div class="col-md-6 col-lg-4">
+                      <div class="card h-100 border-start border-primary border-4 shadow-sm">
+                        <div class="card-body">
+                          <h6 class="card-title fw-bold text-primary mb-2">
+                            <i class="bi bi-building me-2"></i><%= company.name %>
+                          </h6>
+                          <p class="text-muted small mb-2">
+                            <i class="bi bi-geo-alt me-1"></i><%= company.location %>
+                          </p>
+                          <div class="d-flex align-items-center justify-content-between bg-light rounded-2 p-3">
+                            <div>
+                              <small class="text-muted d-block">Students</small>
+                              <h6 class="mb-0 fw-bold text-primary"><%= company.studentCount %></h6>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">Interns</small>
+                              <i class="bi bi-people text-success fs-5"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="text-center text-muted py-5">
+                  <i class="bi bi-inbox display-1 mb-3"></i>
+                  <p>No students have applied to partner companies yet.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- MOA Status by Year/Section -->
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-light border-0 p-4">
+              <h5 class="mb-0 fw-bold d-flex align-items-center">
+                <i class="bi bi-file-earmark-check text-success me-2"></i>MOA Status by Year & Section
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <% if (reportsData.campusMAOStats && reportsData.campusMAOStats.length > 0) { %>
+                <div class="row g-4">
+                  <% reportsData.campusMAOStats.forEach(stat => { 
+                    const donePercent = stat.total > 0 ? Math.round((stat.done / stat.total) * 100) : 0;
+                    const submittedPercent = stat.total > 0 ? Math.round((stat.submitted / stat.total) * 100) : 0;
+                  %>
+                    <div class="col-md-6 col-lg-4">
+                      <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                          <h6 class="card-title fw-bold mb-3">
+                            <i class="bi bi-bookmark-star text-warning me-2"></i><%= stat.campus %>
+                          </h6>
+                          
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <small class="text-muted">MOA Completed</small>
+                              <span class="badge bg-success"><%= stat.done %>/<%= stat.total %></span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-success" role="progressbar" 
+                                style="width: <%= donePercent %>%;" 
+                                aria-valuenow="<%= stat.done %>" aria-valuemin="0" aria-valuemax="<%= stat.total %>">
+                              </div>
+                            </div>
+                            <small class="text-muted"><%= donePercent %>% Done</small>
+                          </div>
+
+                          <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <small class="text-muted">MOA Submitted</small>
+                              <span class="badge bg-warning text-dark"><%= stat.submitted %>/<%= stat.total %></span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-warning" role="progressbar" 
+                                style="width: <%= submittedPercent %>%;" 
+                                aria-valuenow="<%= stat.submitted %>" aria-valuemin="0" aria-valuemax="<%= stat.total %>">
+                              </div>
+                            </div>
+                            <small class="text-muted"><%= submittedPercent %>% Submitted</small>
+                          </div>
+
+                          <div class="bg-light rounded-2 p-2 text-center">
+                            <small class="text-muted d-block">Total Students</small>
+                            <h6 class="mb-0 fw-bold text-primary"><%= stat.total %></h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="text-center text-muted py-5">
+                  <i class="bi bi-graph-up display-1 mb-3"></i>
+                  <p>No MOA data available yet.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Summary Chart -->
+          <div class="card border-0 shadow-sm rounded-3 mt-4">
+            <div class="card-header bg-light border-0 p-4">
+              <h5 class="mb-0 fw-bold d-flex align-items-center">
+                <i class="bi bi-pie-chart text-info me-2"></i>Overall MOA Submission Status
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <div class="row g-4">
+                <% 
+                  let overallDone = 0, overallSubmitted = 0, overallStudents = 0;
+                  reportsData.campusMAOStats.forEach(stat => {
+                    overallDone += stat.done;
+                    overallSubmitted += stat.submitted;
+                    overallStudents += stat.total;
+                  });
+                  const overallDonePercent = overallStudents > 0 ? Math.round((overallDone / overallStudents) * 100) : 0;
+                  const overallSubmittedPercent = overallStudents > 0 ? Math.round((overallSubmitted / overallStudents) * 100) : 0;
+                  const pendingPercent = 100 - overallDonePercent - overallSubmittedPercent;
+                %>
+                <div class="col-md-6">
+                  <div class="text-center">
+                    <div class="mb-3">
+                      <canvas id="moaChart"></canvas>
+                    </div>
+                    <p class="text-muted small">Overall MOA Status Distribution</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="list-group list-group-flush">
+                    <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                      <div>
+                        <h6 class="mb-1 fw-bold">MOA Completed</h6>
+                        <small class="text-muted"><%= overallDone %> out of <%= overallStudents %> students</small>
+                      </div>
+                      <span class="badge bg-success rounded-pill"><%= overallDonePercent %>%</span>
+                    </div>
+                    <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                      <div>
+                        <h6 class="mb-1 fw-bold">MOA Submitted</h6>
+                        <small class="text-muted"><%= overallSubmitted %> out of <%= overallStudents %> students</small>
+                      </div>
+                      <span class="badge bg-warning text-dark rounded-pill"><%= overallSubmittedPercent %>%</span>
+                    </div>
+                    <div class="list-group-item border-0 d-flex justify-content-between align-items-center">
+                      <div>
+                        <h6 class="mb-1 fw-bold">Pending</h6>
+                        <small class="text-muted">Awaiting submission</small>
+                      </div>
+                      <span class="badge bg-secondary rounded-pill"><%= pendingPercent %>%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -588,6 +805,10 @@
           <div class="mb-3">
             <label class="form-label">Email Address</label>
             <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Campus</label>
+            <input type="text" name="campus" class="form-control" required placeholder="Enter campus (e.g., Main Campus, North Campus)">
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
@@ -614,6 +835,8 @@
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.getElementById('announcementForm')?.addEventListener('submit', async (e) => {
@@ -881,4 +1104,56 @@
   function prepareModal(imageSrc) {
     document.getElementById('fullResImage').src = imageSrc;
   }
+
+  // Initialize MOA Chart
+  const moaChartCanvas = document.getElementById('moaChart');
+  if (moaChartCanvas) {
+    <% 
+      let chartDone = 0, chartSubmitted = 0, chartStudents = 0;
+      reportsData.campusMAOStats.forEach(stat => {
+        chartDone += stat.done;
+        chartSubmitted += stat.submitted;
+        chartStudents += stat.total;
+      });
+      const chartPendingCount = chartStudents - chartDone - chartSubmitted;
+    %>
+    new Chart(moaChartCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: ['Completed', 'Submitted', 'Pending'],
+        datasets: [{
+          data: [<%= chartDone %>, <%= chartSubmitted %>, <%= chartPendingCount %>],
+          backgroundColor: ['#198754', '#ffc107', '#6c757d'],
+          borderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  }
 </script>
+
+<style>
+  .stat-icon {
+    transition: transform 0.3s ease;
+  }
+
+  .card:hover .stat-icon {
+    transform: scale(1.1);
+  }
+
+  .list-group-item {
+    padding: 1rem 0;
+  }
+
+  .list-group-item:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0 !important;
+  }
+</style>

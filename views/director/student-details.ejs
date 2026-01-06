@@ -12,41 +12,65 @@
     <div class="col-md-4">
       <div class="custom-rounded-card shadow-sm mb-4">
         <div class="card-body p-4">
-          <div class="d-flex justify-content-between align-items-start">
-            <div class="flex-grow-1 pe-2">
-              <h4 class="fw-bold text-dark mb-3" style="letter-spacing: -0.02em;">
-                <%= profile.personalData.givenName %>
-                  <%= profile.personalData.surname %>
-              </h4>
+          <% if (profile.partnership && profile.partnership.agency) { %>
+            <div class="text-center mb-4">
+              <div class="mb-3">
+                <i class="bi bi-building text-primary" style="font-size: 3rem;"></i>
+              </div>
+              <h3 class="fw-bold text-dark mb-1">
+                <%= profile.partnership.agency %>
+              </h3>
+              <p class="text-muted mb-3">
+                Internship Partner
+              </p>
+            </div>
 
-              <div class="profile-summary-details">
-                <div class="mb-2 text-muted small d-flex align-items-center">
-                  <i class="bi bi-person-badge me-2 text-primary"></i>
-                  <span>ID: <%= profile.personalData.studentId %></span>
+            <div class="internship-info">
+              <div class="info-item mb-3">
+                <label class="text-muted small fw-bold d-block mb-1">
+                  <i class="bi bi-geo-alt me-2 text-primary"></i>Location
+                </label>
+                <p class="mb-0 text-dark">
+                  <%= profile.partnership.location %>
+                </p>
+              </div>
+
+              <% if (profile.partnership.email) { %>
+                <div class="info-item mb-3">
+                  <label class="text-muted small fw-bold d-block mb-1">
+                    <i class="bi bi-envelope me-2 text-primary"></i>Contact Email
+                  </label>
+                  <p class="mb-0">
+                    <a href="mailto:<%= profile.partnership.email %>" class="text-decoration-none">
+                      <%= profile.partnership.email %>
+                    </a>
+                  </p>
                 </div>
-                <div class="mb-0 text-muted small d-flex align-items-start">
-                  <i class="bi bi-book me-2 text-primary"></i>
-                  <span>
-                    <%= profile.personalData.course %>
-                  </span>
-                </div>
+              <% } %>
+
+              <div class="info-item">
+                <label class="text-muted small fw-bold d-block mb-1">
+                  <i class="bi bi-calendar-check me-2 text-primary"></i>Applied On
+                </label>
+                <p class="mb-0 text-dark">
+                  <%= new Date(profile.partnership.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                </p>
               </div>
             </div>
-
-            <div class="ms-2">
-              <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>"
-                class="rounded-circle border shadow-sm"
-                style="width: 85px; height: 85px; object-fit: cover; border: 3px solid white !important;">
+          <% } else { %>
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-building" style="font-size: 3rem; opacity: 0.3;"></i>
+              <p class="mt-3">No partnership information available</p>
             </div>
-          </div>
+          <% } %>
         </div>
       </div>
     </div>
 
     <div class="col-md-8">
       <div class="card mb-4">
-        <div class="card-header">
-          <h5>Memorandum of Agreement (MOA)</h5>
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Memorandum of Agreement (MOA)</h5>
         </div>
         <div class="card-body">
           <% const moaDoc=profile.documents.find(doc=> doc.docType === 'moa'); %>
@@ -64,7 +88,8 @@
                   <tbody>
                     <tr>
                       <td>
-                        <%= moaDoc.docType.replace(/_/g,' ').toUpperCase() %></td>
+                        <strong><%= moaDoc.docType.replace(/_/g,' ').toUpperCase() %></strong>
+                      </td>
                     <td><%= new Date(moaDoc.uploadDate).toLocaleDateString() %></td>
                     <td>
                       <select class="form-select form-select-sm director-status-select" data-doc-id="<%= moaDoc._id %>">
@@ -76,18 +101,19 @@
                       </td>
                       <td>
                         <a href="/director/document/<%= moaDoc._id %>/view" class="btn btn-sm btn-outline-primary"
-                          target="_blank">View MOA</a>
+                          target="_blank"><i class="bi bi-eye me-1"></i>View MOA</a>
                         <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal"
                           data-bs-target="#directorCommentsModal" data-doc-id="<%= moaDoc._id %>"
-                          data-doc-title="<%= moaDoc.docType.replace(/_/g, ' ').toUpperCase() %>">Comments</button>
+                          data-doc-title="<%= moaDoc.docType.replace(/_/g, ' ').toUpperCase() %>"><i class="bi bi-chat me-1"></i>Comments</button>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <% } else { %>
-                <div class="text-center text-muted py-4">
-                  <p>MOA document not yet submitted.</p>
+                <div class="alert alert-warning mb-0">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  <strong>No MOA Document</strong> - The student has not yet submitted the Memorandum of Agreement document.
                 </div>
                 <% } %>
         </div>
@@ -116,7 +142,7 @@
           <input type="hidden" id="directorDocumentId" name="documentId">
           <div class="mb-3">
             <label class="form-label">Add Comment</label>
-            <textarea class="form-control" name="comment" rows="2" required></textarea>
+            <textarea class="form-control" name="comment" rows="2" required placeholder="Enter your feedback..."></textarea>
           </div>
           <div class="d-flex justify-content-end gap-2">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

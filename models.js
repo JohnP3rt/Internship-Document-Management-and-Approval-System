@@ -8,7 +8,8 @@ const UserSchema = new Schema({
   status: { type: String, enum: ['pending', 'active', 'rejected', 'Processing', 'Revise', 'For Signature'], default: 'pending' },
   studentProfile: { type: Schema.Types.ObjectId, ref: 'StudentProfile' },
   name: { type: String },
-  profilePicture: { type: String }
+  profilePicture: { type: String },
+  campus: { type: String, default: '' }
 });
 
 const StudentProfileSchema = new Schema({

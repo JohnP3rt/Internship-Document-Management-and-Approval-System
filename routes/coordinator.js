@@ -64,15 +64,16 @@ const announcementUpload = multer({
 }).single('image');
 
 router.post('/create-coordinator', auth('coordinator'), async (req, res) => {
-  const { email, password, name } = req.body;
-  if (!email || !password || !name) return res.status(400).json({ error: 'Missing fields' });
+  const { email, password, name, campus } = req.body;
+  if (!email || !password || !name || !campus) return res.status(400).json({ error: 'Missing required fields (email, password, name, campus)' });
   
   try {
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({
       email,
       password: hash,
-      name, 
+      name,
+      campus,
       role: 'coordinator',
       status: 'active'
     });
@@ -199,7 +200,10 @@ router.post('/edit-profile', auth('coordinator'), async (req, res) => {
                 }
                 user.profilePicture = `/uploads/profile-pictures/${req.file.filename}`;
             }
-            user.name = req.body.name;
+            
+            user.name = req.body.name || user.name;
+            user.campus = req.body.campus || user.campus;
+            
             await user.save();
             res.redirect('/coordinator/dashboard');
         } catch (err) {
@@ -279,13 +283,17 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
             announcements[i] = a;
         }
 
-        const coordinators = await User.find({ role: 'coordinator' }).select('email name status');
+        const coordinators = await User.find({ role: 'coordinator' }).select('email name status campus');
+
+        // Generate reports data
+        const reportsData = await generateReportsData(activeStudents);
 
         res.render('coordinator/dashboard', { 
           pendingStudents,
           activeStudents,
           coordinators,
           announcements,
+          reportsData,
           error: req.query.error,
           message: req.query.message,
           user: req.user
@@ -295,6 +303,61 @@ router.get('/dashboard', auth('coordinator'), async (req, res) => {
         res.redirect('/?error=Error loading dashboard');
     }
 });
+
+async function generateReportsData(activeStudents) {
+    const companiesMap = {};
+    const campusMAOStats = {};
+
+    activeStudents.forEach(student => {
+        const profile = student.studentProfile;
+        
+        // Build companies statistics
+        if (profile.partnership && profile.partnership.agency) {
+            const company = profile.partnership.agency;
+            if (!companiesMap[company]) {
+                companiesMap[company] = {
+                    name: company,
+                    location: profile.partnership.location,
+                    studentCount: 0,
+                    students: []
+                };
+            }
+            companiesMap[company].studentCount++;
+            companiesMap[company].students.push({
+                name: `${profile.personalData.givenName} ${profile.personalData.surname}`,
+                studentId: profile.personalData.studentId
+            });
+        }
+
+        // Build MOA statistics by campus
+        const campus = student.studentProfile?.personalData?.yearSection || 'Unknown';
+        if (!campusMAOStats[campus]) {
+            campusMAOStats[campus] = {
+                campus: campus,
+                submitted: 0,
+                done: 0,
+                total: 0
+            };
+        }
+        campusMAOStats[campus].total++;
+
+        const moaDoc = profile.documents?.find(d => d.docType === 'moa');
+        if (moaDoc) {
+            if (moaDoc.status === 'Done') {
+                campusMAOStats[campus].done++;
+            } else if (moaDoc.status === 'Submitted' || moaDoc.status === 'Checked') {
+                campusMAOStats[campus].submitted++;
+            }
+        }
+    });
+
+    return {
+        companies: Object.values(companiesMap),
+        campusMAOStats: Object.values(campusMAOStats),
+        totalCompanies: Object.keys(companiesMap).length,
+        totalStudentsInterning: activeStudents.filter(s => s.studentProfile?.partnership?.agency).length
+    };
+}
 
 router.post('/announcement', auth('coordinator'), (req, res) => {
     announcementUpload(req, res, async (err) => {
