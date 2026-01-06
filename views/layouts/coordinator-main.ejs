@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,9 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
 </head>
-
 <body>
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-white">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-white">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">OJT System</a>
             <% if (locals.user) { %>
@@ -20,22 +18,22 @@
                 </div>
             <% } %>
         </div>
-    </nav> -->
+    </nav>
 
     <div class="container-fluid">
         <% if (locals.error) { %>
             <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
                 <%= error %>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <% } %>
-                <% if (locals.message) { %>
-                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                        <%= message %>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    <% } %>
-                        <%- body %>
+        <% } %>
+        <% if (locals.message) { %>
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <%= message %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <% } %>
+        <%- body %>
     </div>
 
     <script>
@@ -49,5 +47,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/main.js"></script>
 </body>
-
 </html>

@@ -1,0 +1,176 @@
+.custom-post-card {
+  background-color: #f0f5fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.custom-post-card .card-header {
+  background: transparent !important;
+  padding-bottom: 0;
+}
+
+.comment-trigger-bar {
+  background-color: #e8eff6;
+  padding: 12px 20px;
+  color: #a0a0c0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-top: 1px solid #d1d9e0;
+}
+
+.post-author-name {
+  font-weight: 700;
+  color: #1a1a1b;
+}
+.post-author-role {
+  color: #878a8c;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.clickable-image:hover {
+  filter: brightness(0.9);
+  transition: 0.3s ease;
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.btn-outline-primary:focus,
+.btn-outline-primary:active,
+.btn-outline-primary:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-outline-primary:active {
+  transform: translateY(1px);
+}
+
+.section-title {
+  font-weight: 700;
+  line-height: normal;
+}
+
+.accordion {
+  border-radius: 0.8125rem;
+}
+
+#documentsAccordion .accordion-item {
+  background-color: #f0f5fa;
+  border: 1px solid #d1d9e0;
+  border-radius: 16px !important;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.accordion-button {
+  background-color: transparent !important;
+  color: #1a1a1b !important;
+  font-weight: 600;
+  padding: 1.25rem;
+  box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+  border-bottom: 1px solid #d1d9e0;
+}
+
+.accordion-button .progress {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 10px;
+}
+
+.accordion-button .progress-bar {
+  background-color: #3b82f6;
+  border-radius: 10px;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: #e8eff6;
+  border-bottom: 1px solid #d1d9e0;
+  color: #4a5568;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  padding: 1rem;
+}
+
+.table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-color: #e2e8f0;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: #d1d9e0;
+}
+
+.btn-compact {
+  padding: 0.25rem 0.5rem !important;
+  font-size: 0.75rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 6px !important;
+  white-space: nowrap;
+}
+
+.btn-icon-only {
+  width: 28px;
+  height: 28px;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+.accordion-button .progress {
+  height: 6px;
+  background-color: #d1d9e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.accordion-button .progress-bar {
+  background-color: #007bff !important;
+  border-radius: 10px;
+}
+
+/* Forda profile tab */
+.profile-card {
+  border-radius: 1rem !important;
+  padding: 3rem !important ;
+}
+
+.card-body {
+  border-radius: 1rem !important;
+  padding: 1 rem 2rem 0 2rem !important ;
+}
+
+.card .shadow-sm {
+  border-radius: 1rem !important;
+}
+
+.custom-rounded-card {
+  border-radius: 1rem !important;
+  overflow: hidden;
+  border: 1px solid #d1d9e0 !important;
+}
+
+.custom-rounded-card .card-body {
+  padding: 2.5rem !important;
+}
+
+.custom-rounded-card .card-header {
+  background-color: #e8eff6 !important;
+  border-bottom: 1px solid #d1d9e0;
+  padding: 1.25rem 2.5rem;
+}

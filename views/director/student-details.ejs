@@ -1,95 +1,131 @@
-<div class="container">
-  <div class="mb-3">
-    <a href="/director/dashboard" class="btn btn-outline-primary">&larr; Back to Director Dashboard</a>
+<link href="/css/style-nav.css" rel="stylesheet">
+<link href="/css/style-student-details.css" rel="stylesheet">
+
+<div class="container mt-4">
+  <div class="mb-4">
+    <a href="/director/dashboard" class="btn back-to-dash-btn">
+      <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
   </div>
 
   <div class="row">
     <div class="col-md-4">
-      <div class="card mb-4">
-        <div class="card-body text-center">
-          <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>" class="rounded-circle profile-picture mb-3" alt="Profile">
-          <h4><%= profile.personalData.givenName %> <%= profile.personalData.surname %></h4>
-          <p class="text-muted mb-1">Student ID: <%= profile.personalData.studentId %></p>
-          <p class="mb-0"><strong>Course:</strong> <%= profile.personalData.course %></p>
+      <div class="custom-rounded-card shadow-sm mb-4">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1 pe-2">
+              <h4 class="fw-bold text-dark mb-3" style="letter-spacing: -0.02em;">
+                <%= profile.personalData.givenName %>
+                  <%= profile.personalData.surname %>
+              </h4>
+
+              <div class="profile-summary-details">
+                <div class="mb-2 text-muted small d-flex align-items-center">
+                  <i class="bi bi-person-badge me-2 text-primary"></i>
+                  <span>ID: <%= profile.personalData.studentId %></span>
+                </div>
+                <div class="mb-0 text-muted small d-flex align-items-start">
+                  <i class="bi bi-book me-2 text-primary"></i>
+                  <span>
+                    <%= profile.personalData.course %>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="ms-2">
+              <img src="<%= profile.personalData.profilePicture || '/images/default-avatar.png' %>"
+                class="rounded-circle border shadow-sm"
+                style="width: 85px; height: 85px; object-fit: cover; border: 3px solid white !important;">
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="col-md-8">
       <div class="card mb-4">
-        <div class="card-header"><h5>Memorandum of Agreement (MOA)</h5></div>
+        <div class="card-header">
+          <h5>Memorandum of Agreement (MOA)</h5>
+        </div>
         <div class="card-body">
-          <% const moaDoc = profile.documents.find(doc => doc.docType === 'moa'); %>
-          <% if (moaDoc) { %>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Document</th>
-                    <th>Uploaded</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><%= moaDoc.docType.replace(/_/g,' ').toUpperCase() %></td>
+          <% const moaDoc=profile.documents.find(doc=> doc.docType === 'moa'); %>
+            <% if (moaDoc) { %>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Document</th>
+                      <th>Uploaded</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <%= moaDoc.docType.replace(/_/g,' ').toUpperCase() %></td>
                     <td><%= new Date(moaDoc.uploadDate).toLocaleDateString() %></td>
                     <td>
                       <select class="form-select form-select-sm director-status-select" data-doc-id="<%= moaDoc._id %>">
-                        <option value="Processing" <%= moaDoc.status==='Processing' ? 'selected':'' %>>Processing</option>
-                        <option value="Revise" <%= moaDoc.status==='Revise' ? 'selected':'' %>>Revise</option>
-                        <option value="Done" <%= moaDoc.status==='Done' ? 'selected':'' %>>Done</option>
-                      </select>
-                    </td>
-                    <td>
-                      <a href="/director/document/<%= moaDoc._id %>/view" class="btn btn-sm btn-outline-primary" target="_blank">View MOA</a>
-                      <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal" data-bs-target="#directorCommentsModal" data-doc-id="<%= moaDoc._id %>" data-doc-title="<%= moaDoc.docType.replace(/_/g, ' ').toUpperCase() %>">Comments</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          <% } else { %>
-            <div class="text-center text-muted py-4">
-              <p>MOA document not yet submitted.</p>
-            </div>
-          <% } %>
+                        <option value="Processing" <%= moaDoc.status===' Processing' ? 'selected' :'' %>>Processing
+                          </option>
+                          <option value="Revise" <%=moaDoc.status==='Revise' ? 'selected' :'' %>>Revise</option>
+                          <option value="Done" <%=moaDoc.status==='Done' ? 'selected' :'' %>>Done</option>
+                          </select>
+                      </td>
+                      <td>
+                        <a href="/director/document/<%= moaDoc._id %>/view" class="btn btn-sm btn-outline-primary"
+                          target="_blank">View MOA</a>
+                        <button type="button" class="btn btn-sm btn-info ms-1" data-bs-toggle="modal"
+                          data-bs-target="#directorCommentsModal" data-doc-id="<%= moaDoc._id %>"
+                          data-doc-title="<%= moaDoc.docType.replace(/_/g, ' ').toUpperCase() %>">Comments</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <% } else { %>
+                <div class="text-center text-muted py-4">
+                  <p>MOA document not yet submitted.</p>
+                </div>
+                <% } %>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="directorCommentsModal" tabindex="-1" aria-labelledby="directorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="directorModalLabel">Comments - <span id="directorDocTitle"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="directorCommentsModal" tabindex="-1" aria-labelledby="directorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="directorModalLabel">Comments - <span id="directorDocTitle"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="directorCommentsList" class="mb-4" style="max-height: 300px; overflow-y: auto;">
+          <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
-            <div class="modal-body">
-                <div id="directorCommentsList" class="mb-4" style="max-height: 300px; overflow-y: auto;">
-                    <div class="text-center py-3">
-                        <div class="spinner-border spinner-border-sm" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-                <form id="directorCommentForm">
-                    <input type="hidden" id="directorDocumentId" name="documentId">
-                    <div class="mb-3">
-                        <label class="form-label">Add Comment</label>
-                        <textarea class="form-control" name="comment" rows="2" required></textarea>
-                    </div>
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Post Comment</button>
-                    </div>
-                </form>
-            </div>
+          </div>
         </div>
+        <form id="directorCommentForm">
+          <input type="hidden" id="directorDocumentId" name="documentId">
+          <div class="mb-3">
+            <label class="form-label">Add Comment</label>
+            <textarea class="form-control" name="comment" rows="2" required></textarea>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
 
 <script>
@@ -104,8 +140,8 @@
           body: JSON.stringify({ status })
         });
         if (!resp.ok) throw new Error('Failed to set status');
-        e.target.classList.add('bg-success','text-white');
-        setTimeout(()=> e.target.classList.remove('bg-success','text-white'), 1000);
+        e.target.classList.add('bg-success', 'text-white');
+        setTimeout(() => e.target.classList.remove('bg-success', 'text-white'), 1000);
       } catch (err) {
         alert('Error setting status: ' + err.message);
       }
@@ -116,28 +152,28 @@
     const button = e.relatedTarget;
     const docId = button.getAttribute('data-doc-id');
     const docTitle = button.getAttribute('data-doc-title');
-    
+
     document.getElementById('directorDocumentId').value = docId;
     document.getElementById('directorDocTitle').textContent = docTitle;
     const commentsList = document.getElementById('directorCommentsList');
-    
+
     try {
-        const response = await fetch(`/director/document-comments/${docId}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-        });
+      const response = await fetch(`/director/document-comments/${docId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch comments');
-        }
+      if (!response.ok) {
+        throw new Error('Failed to fetch comments');
+      }
 
-        const data = await response.json();
-        const comments = data.comments || [];
-        
-        if (comments.length === 0) {
-            commentsList.innerHTML = '<p class="text-muted text-center">No comments yet.</p>';
-        } else {
-            commentsList.innerHTML = comments.map((c, idx) => `
+      const data = await response.json();
+      const comments = data.comments || [];
+
+      if (comments.length === 0) {
+        commentsList.innerHTML = '<p class="text-muted text-center">No comments yet.</p>';
+      } else {
+        commentsList.innerHTML = comments.map((c, idx) => `
                 <div class="bg-light rounded p-3 mb-2 comment-item" data-index="${idx}">
                     <div class="d-flex justify-content-between">
                         <strong>${c.author}</strong>
@@ -152,33 +188,33 @@
                 </div>
             `).join('');
 
-            document.querySelectorAll('.delete-comment-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    if (!confirm('Delete this comment?')) return;
-                    const docId = btn.getAttribute('data-doc-id');
-                    const idx = btn.getAttribute('data-index');
-                    try {
-                        const resp = await fetch(`/director/document-comment/${docId}/${idx}`, {
-                            method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        if (!resp.ok) {
-                            const err = await resp.json();
-                            throw new Error(err.error || 'Failed to delete comment');
-                        }
-                        btn.closest('.comment-item').remove();
-                        alert('Comment deleted');
-                    } catch (err) {
-                        alert('Error: ' + err.message);
-                    }
-                });
-            });
-        }
+        document.querySelectorAll('.delete-comment-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!confirm('Delete this comment?')) return;
+            const docId = btn.getAttribute('data-doc-id');
+            const idx = btn.getAttribute('data-index');
+            try {
+              const resp = await fetch(`/director/document-comment/${docId}/${idx}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+              });
+              if (!resp.ok) {
+                const err = await resp.json();
+                throw new Error(err.error || 'Failed to delete comment');
+              }
+              btn.closest('.comment-item').remove();
+              alert('Comment deleted');
+            } catch (err) {
+              alert('Error: ' + err.message);
+            }
+          });
+        });
+      }
     } catch (err) {
-        console.error('Error fetching comments:', err);
-        commentsList.innerHTML = '<p class="text-danger text-center">Error loading comments. Please try again.</p>';
+      console.error('Error fetching comments:', err);
+      commentsList.innerHTML = '<p class="text-danger text-center">Error loading comments. Please try again.</p>';
     }
-    
+
     document.getElementById('directorCommentForm').reset();
   });
 
@@ -186,29 +222,29 @@
     e.preventDefault();
     const docId = document.getElementById('directorDocumentId').value;
     const comment = document.querySelector('#directorCommentForm textarea[name="comment"]').value;
-    
+
     if (!comment.trim()) {
-        alert('Please enter a comment');
-        return;
+      alert('Please enter a comment');
+      return;
     }
-    
+
     try {
-        const response = await fetch(`/director/document-comment/${docId}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ comment: comment.trim() })
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to add comment');
-        }
-        
-        alert('Comment added successfully');
-        bootstrap.Modal.getInstance(document.getElementById('directorCommentsModal')).hide();
-        setTimeout(() => window.location.reload(), 500);
+      const response = await fetch(`/director/document-comment/${docId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment: comment.trim() })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to add comment');
+      }
+
+      alert('Comment added successfully');
+      bootstrap.Modal.getInstance(document.getElementById('directorCommentsModal')).hide();
+      setTimeout(() => window.location.reload(), 500);
     } catch (err) {
-        alert('Error adding comment: ' + err.message);
+      alert('Error adding comment: ' + err.message);
     }
   });
 </script>

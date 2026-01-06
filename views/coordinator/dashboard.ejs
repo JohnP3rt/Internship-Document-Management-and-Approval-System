@@ -1,208 +1,284 @@
-<div class="d-flex">
-  <div class="sidebar bg-light border-end" style="width: 280px; height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto;">
-    <div class="p-3 border-bottom text-center">
-      <div class="text-center mb-3">
-        <img src="/images/logo-placeholder.png" alt="Logo" style="width: 150px; height: auto;">
+<link href="/css/style-nav.css" rel="stylesheet">
+<link href="/css/style-coordinator-dash.css" rel="stylesheet">
+
+<div class="main-container d-flex">
+  <div class="sidebar bg-light border-end"
+    style="width: 280px; height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto;">
+    <div class="p-3 pb-0 text-center mb-4">
+      <div class="mb-3 logogogo">
+        <img src="/images/logo-placeholder.png" alt="Logo" class="mx-auto d-block" style="width: 200px; height: auto;">
       </div>
-      <div class="text-center">
-        <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" 
-             class="rounded-circle mb-2 mx-auto d-block" style="width: 80px; height: 80px; object-fit: cover;">
-        <div><strong><%= user.name || user.email %></strong></div>
+
+      <div class="user-card">
+        <img src="<%= user.profilePicture || '/images/default-avatar.png' %>"
+          class="rounded-circle mb-2 mx-auto d-block" style="width: 80px; height: 80px; object-fit: cover;">
+        <div><strong>
+            <%= user.name || user.email %>
+          </strong></div>
         <small class="text-muted">Coordinator</small>
+
+        <div class="account-btns">
+          <div class="mt-2">
+            <a href="/coordinator/edit-profile" class="btn btn-outline-primary edit-btn">
+              <img src="/images/icons/edit-blue.svg" alt="Edit" style="width: 14px; height: auto;">
+              <span>Edit</span>
+            </a>
+          </div>
+          <div class="mt-2">
+            <a href="#" onclick="handleLogout(event)" class="btn btn-outline-primary edit-btn">
+              <img src="/images/icons/door-icon.svg" alt="Edit" style="width: 14px; height: auto;">
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div class="nav flex-column nav-pills p-3" id="coordinatorSidebar" role="tablist" aria-orientation="vertical" style="display: flex; flex-direction: column; align-items: center;">
-      <a class="nav-link active" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home" role="tab" style="width: 100%; text-align: center;"> 
-        <i class="bi bi-house-door"></i> Home
+    <div class="nav flex-column nav-pills p-3 pt-0" id="coordinatorSidebar" role="tablist" aria-orientation="vertical">
+      <a class="nav-link active" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/home-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Home</p>
       </a>
-      <a class="nav-link" id="nav-review-tab" data-bs-toggle="pill" href="#nav-review" role="tab" style="width: 100%; text-align: center;">
-        <i class="bi bi-list-check"></i> Review Submissions
+      <a class="nav-link" id="nav-review-tab" data-bs-toggle="pill" href="#nav-review" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/documents-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Review submissions</p>
       </a>
-      <a class="nav-link" id="nav-applications-tab" data-bs-toggle="pill" href="#nav-applications" role="tab" style="width: 100%; text-align: center;">
-        <i class="bi bi-briefcase"></i> Applications
+      <a class="nav-link" id="nav-applications-tab" data-bs-toggle="pill" href="#nav-applications" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/megaphone-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Applications</p>
       </a>
-      <a class="nav-link" id="nav-requests-tab" data-bs-toggle="pill" href="#nav-requests" role="tab" style="width: 100%; text-align: center;">
-        <i class="bi bi-person-plus"></i> Account Requests
+      <a class="nav-link" id="nav-requests-tab" data-bs-toggle="pill" href="#nav-requests" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/confirm-people.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Account requests</p>
       </a>
-      <a class="nav-link" id="nav-coordinators-tab" data-bs-toggle="pill" href="#nav-coordinators" role="tab" style="width: 100%; text-align: center;">
-        <i class="bi bi-people"></i> Coordinators
+      <a class="nav-link" id="nav-coordinators-tab" data-bs-toggle="pill" href="#nav-coordinators" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/add-people.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Add coordinators</p>
       </a>
     </div>
+
   </div>
 
   <div class="main-content" style="margin-left: 280px; width: calc(100% - 280px); min-height: 100vh;">
     <div class="container py-4">
       <div class="tab-content">
 
+        <!-- Announcements tab -->
         <div class="tab-pane fade show active" id="nav-home" role="tabpanel">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>OJT Coordinator Dashboard</h2>
-            <div>
-              <a href="/coordinator/edit-profile" class="btn btn-outline-primary me-2">
-                <i class="bi bi-person-gear"></i> Edit Profile
-              </a>
-            </div>
+            <h4 class="mb-4 section-title">Your announcements</h4>
           </div>
           <div class="row g-4">
             <div class="col-12">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <form id="announcementForm">
-                    <div class="d-flex mb-3">
-                      <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" 
-                           class="rounded-circle me-3" 
-                           style="width: 45px; height: 45px; object-fit: cover;">
-                      <div class="flex-grow-1">
-                        <input type="text" name="title" class="form-control form-control-lg mb-2" 
-                               placeholder="What's your announcement title?">
-                        <textarea name="content" class="form-control" rows="3" 
-                                  placeholder="Share something with your students..."></textarea>
-                      </div>
+              <div class="custom-post-card p-4 shadow-sm">
+                <form id="announcementForm">
+                  <div class="d-flex align-items-start mb-3">
+                    <img src="<%= user.profilePicture || '/images/default-avatar.png' %>"
+                      class="rounded-circle me-3 border" style="width: 45px; height: 45px; object-fit: cover;">
+
+                    <div class="flex-grow-1">
+                      <input type="text" name="title"
+                        class="form-control border-0 bg-transparent fw-bold fs-5 ps-0 mb-1"
+                        placeholder="Create an announcement title" style="box-shadow: none;">
+
+                      <textarea name="content" class="form-control border-0 bg-transparent ps-0" rows="2"
+                        placeholder="Share something with your students..."
+                        style="box-shadow: none; resize: none;"></textarea>
                     </div>
-                    <div class="border rounded p-3 mb-3">
-                      <div class="d-flex align-items-center">
-                        <i class="bi bi-image fs-4 me-2"></i>
-                        <label class="mb-0" style="cursor: pointer;">
-                          Add Photo
-                          <input type="file" name="image" id="announcementImage" 
-                                 class="d-none" accept="image/*">
-                        </label>
-                      </div>
-                      <div id="imagePreview" class="mt-2 position-relative" style="display: none;">
-                        <img src="" class="img-fluid rounded">
-                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
-                                onclick="removeImage()">
-                          <i class="bi bi-x"></i>
-                        </button>
-                      </div>
+                  </div>
+
+                  <div id="previewContainer" class="mt-2 mb-3 position-relative d-none ms-5">
+                    <img src="" id="imagePreview" class="img-fluid rounded border" style="max-height: 150px;">
+                    <button type="button"
+                      class="btn btn-danger btn-sm rounded-circle position-absolute top-0 start-0 m-1"
+                      onclick="clearSelectedImage()" style="width: 22px; height: 22px; padding: 0; line-height: 1;">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                    <div class="d-flex align-items-center ms-5">
+                      <label class="mb-0 d-flex align-items-center gap-2 text-muted" style="cursor: pointer;">
+                        <span class="small fw-bold">Attach Photo</span>
+                        <i class="bi bi-image text-primary fs-5"></i>
+                        <input type="file" name="image" id="announcementImage" class="d-none" accept="image/*"
+                          onchange="showPreview(this)">
+                      </label>
                     </div>
-                    <div class="text-end">
-                      <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-send me-2"></i> Post
-                      </button>
-                    </div>
-                  </form>
-                </div>
+
+                    <button type="submit" class="btn btn-primary px-5 fw-bold rounded-3">Post</button>
+                  </div>
+                </form>
               </div>
             </div>
             <div class="col-12">
               <div class="announcements-list">
-                <% if (announcements && announcements.length > 0) { %>
-                  <% announcements.forEach(announcement => { %>
-                    <div class="card shadow-sm mb-4 announcement-card">
-                      <div class="card-header bg-white border-0 py-3">
+                <% if (announcements && announcements.length> 0) { %>
+                  <% announcements.forEach(announcement=> { %>
+                    <div class="custom-post-card mb-4 px-3 py-2 shadow-sm">
+                      <div class="card-header border-0 pt-3">
                         <div class="d-flex justify-content-between align-items-start">
                           <div class="d-flex align-items-center">
-                            <img src="<%= announcement.author?.profilePicture || '/images/default-avatar.png' %>" 
-                                 class="rounded-circle me-3" 
-                                 style="width: 48px; height: 48px; object-fit: cover;">
+                            <img src="<%= announcement.author?.profilePicture || '/images/default-avatar.png' %>"
+                              class="rounded-circle me-3" style="width: 42px; height: 42px; object-fit: cover;">
                             <div>
-                              <h6 class="mb-0"><%= announcement.author?.name || announcement.author?.email %></h6>
-                              <small class="text-muted">
-                                <%= new Date(announcement.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
+                              <div class="mb-0">
+                                <span class="post-author-name">
+                                  <%= announcement.author?.name %>
+                                </span>
+                                <span class="post-author-role text-muted small">Coordinator</span>
+                              </div>
+                              <small class="text-muted" style="font-size: 0.75rem;">
+                                <%= new Date(announcement.createdAt).toLocaleString('en-US', { day: 'numeric' ,
+                                  month: 'short' , hour: 'numeric' , minute: '2-digit' }) %>
                               </small>
                             </div>
                           </div>
-                          <button class="border-0 bg-transparent p-0 btn-sm delete-announcement" data-id="<%= announcement._id %>" title="Delete announcement">
-                            <img src="/images/close.png" alt="Delete" style="width: 16px; height: 16px;">
+                          <button class="border-0 bg-transparent p-0 btn-sm delete-announcement"
+                            data-id="<%= announcement._id %>" title="Delete announcement">
+                            <img src="/images/close.png" alt="Delete" style="width: 14px; height: 14px; opacity: 0.6;">
                           </button>
                         </div>
                       </div>
-                      <div class="card-body pt-0">
-                        <h5 class="card-title"><%= announcement.title %></h5>
-                        <p class="card-text"><%= announcement.content %></p>
-                        <% if (announcement.imageUrl) { %>
-                          <img src="<%= announcement.imageUrl %>" class="img-fluid rounded mb-3">
-                        <% } %>
-                        
-                        <div class="d-flex gap-2 mt-3 mb-3">
-                          <button class="btn btn-outline-primary btn-sm comment-btn" onclick="toggleComments(this)">
-                            <i class="bi bi-chat"></i> Comments (<%= announcement.comments?.length || 0 %>)
-                          </button>
-                        </div>
 
-                        <div class="comments-section" style="display: none;">
-                          <hr>
-                          <form class="comment-form d-flex gap-2 mb-3" data-announcement="<%= announcement._id %>">
-                            <img src="<%= user.profilePicture || '/images/default-avatar.png' %>" 
-                                 class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
-                            <div class="flex-grow-1">
-                              <input type="text" class="form-control rounded-pill" placeholder="Write a comment...">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm px-3">Post</button>
-                          </form>
-                          
-                          <div class="comments-list">
-                            <% (announcement.comments || []).forEach(comment => { %>
-                              <div class="d-flex gap-2 mb-2">
-                                <img src="<%= comment.author?.profilePicture || '/images/default-avatar.png' %>" 
-                                     class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
-                                <div class="bg-light rounded-3 p-2 flex-grow-1">
-                                  <div class="fw-bold"><%= comment.author?.name || comment.author?.email %></div>
-                                  <p class="mb-1"><%= comment.content %></p>
-                                  <small class="text-muted">
-                                    <%= new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
-                                  </small>
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          <%= announcement.title %>
+                        </h5>
+                        <p class="card-text">
+                          <%= announcement.content %>
+                        </p>
+
+                        <% if (announcement.imageUrl) { %>
+                          <div class="text-center">
+                            <img src="<%= announcement.imageUrl %>" class="img-fluid rounded mb-3 clickable-image"
+                              style="aspect-ratio: 1 / 1; width: 100%; max-width: 400px; object-fit: cover; cursor: pointer;"
+                              data-bs-toggle="modal" data-bs-target="#imageModal" onclick="prepareModal(this.src)">
+                          </div>
+                          <% } %>
+
+                            <div class="border-top pt-3">
+                              <button class="btn btn-outline-primary btn-sm mb-3 comment-btn"
+                                onclick="toggleComments(this)">
+                                <i class="bi bi-chat"></i> Comments (<%= announcement.comments?.length || 0 %>)
+                              </button>
+
+                              <div class="comments-section" style="display: none;">
+                                <form class="comment-form d-flex gap-2 mb-3"
+                                  data-announcement="<%= announcement._id %>">
+                                  <img src="<%= user.profilePicture || '/images/default-avatar.png' %>"
+                                    class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                  <div class="flex-grow-1">
+                                    <input type="text" class="form-control rounded-pill"
+                                      placeholder="Write a comment...">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary btn-sm px-3">Post</button>
+                                </form>
+
+                                <div class="comments-list">
+                                  <% (announcement.comments || []).forEach(comment=> { %>
+                                    <div class="d-flex gap-2 mb-2">
+                                      <img src="<%= comment.author?.profilePicture || '/images/default-avatar.png' %>"
+                                        class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                      <div class="bg-light rounded-3 p-2 flex-grow-1">
+                                        <div class="fw-bold">
+                                          <%= comment.author?.name || comment.author?.email %>
+                                        </div>
+                                        <p class="mb-1">
+                                          <%= comment.content %>
+                                        </p>
+                                        <small class="text-muted">
+                                          <%= new Date(comment.createdAt).toLocaleString('en-US', { year: 'numeric' ,
+                                            month: 'short' , day: 'numeric' , hour: 'numeric' , minute: '2-digit' }) %>
+                                        </small>
+                                      </div>
+                                    </div>
+                                    <% }) %>
                                 </div>
                               </div>
-                            <% }) %>
-                          </div>
-                        </div>
+                            </div>
                       </div>
                     </div>
-                  <% }) %>
-                <% } else { %>
-                  <div class="text-center py-5 text-muted">
-                    <i class="bi bi-megaphone display-1 mb-3"></i>
-                    <h5>No announcements yet</h5>
-                    <p>Create your first announcement to get started!</p>
-                  </div>
-                <% } %>
+                    <% }) %>
+                      <% } %>
               </div>
             </div>
           </div>
         </div>
+
+        <script>
+          function showPreview(input) {
+            const container = document.getElementById('previewContainer');
+            const preview = document.getElementById('imagePreview');
+
+            if (input.files && input.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                preview.src = e.target.result;
+                container.classList.remove('d-none'); // Show the container
+              }
+              reader.readAsDataURL(input.files[0]);
+            }
+          }
+
+          function clearSelectedImage() {
+            const container = document.getElementById('previewContainer');
+            const fileInput = document.getElementById('announcementImage');
+
+            fileInput.value = ""; // This is the key: it resets the actual file selection
+            container.classList.add('d-none'); // Hide the container
+          }
+        </script>
+
+        <!-- Review submissions tab -->
         <div class="tab-pane fade" id="nav-review" role="tabpanel">
-          <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h4>Review Submissions</h4>
-              <small class="text-muted">Students with submitted documents</small>
-            </div>
-            <div class="card-body">
-              <div class="row mb-4 g-3">
-                <div class="col-md-4">
-                  <label class="form-label">Filter by Course</label>
-                  <select class="form-select" id="courseFilter">
-                    <option value="">All Courses</option>
-                    <% 
-                      const courses = [...new Set(activeStudents.map(s => s.studentProfile?.personalData?.course).filter(Boolean))];
-                      courses.forEach(course => {
-                    %>
-                      <option value="<%= course %>"><%= course %></option>
-                    <% }); %>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Filter by Year & Section</label>
-                  <select class="form-select" id="yearSectionFilter">
-                    <option value="">All Year & Section</option>
-                    <% 
-                      const yearSections = [...new Set(activeStudents.map(s => s.studentProfile?.personalData?.yearSection).filter(Boolean))];
-                      yearSections.forEach(ys => {
-                    %>
-                      <option value="<%= ys %>"><%= ys %></option>
-                    <% }); %>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Filter by Status</label>
-                  <select class="form-select" id="statusFilter">
-                    <option value="">All Status</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Pending Review">Pending Review</option>
-                    <option value="Submitting">Submitting</option>
-                  </select>
+          <h4 class="mb-4 section-title">Review submissions</h4>
+
+          <div class="custom-rounded-card shadow-sm mb-4">
+            <div class="card-body p-0">
+              <div class="p-4 bg-white border-bottom">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Filter by Course</label>
+                    <select class="form-select" id="courseFilter">
+                      <option value="">All Courses</option>
+                      <% const courses=[...new Set(activeStudents.map(s=>
+                        s.studentProfile?.personalData?.course).filter(Boolean))];
+                        courses.forEach(course => { %>
+                        <option value="<%= course %>">
+                          <%= course %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Filter by Year & Section</label>
+                    <select class="form-select" id="yearSectionFilter">
+                      <option value="">All Year & Section</option>
+                      <% const yearSections=[...new Set(activeStudents.map(s=>
+                        s.studentProfile?.personalData?.yearSection).filter(Boolean))];
+                        yearSections.forEach(ys => { %>
+                        <option value="<%= ys %>">
+                          <%= ys %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Filter by Status</label>
+                    <select class="form-select" id="statusFilter">
+                      <option value="">All Status</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Pending Review">Pending Review</option>
+                      <option value="Submitting">Submitting</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -216,170 +292,195 @@
                       <th>Year & Section</th>
                       <th>Documents Status</th>
                       <th>Overall Status</th>
-                      <th>Actions</th>
+                      <th class="text-end">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="reviewSubmissionsBody">
-                    <% activeStudents.forEach(student => { 
+                    <% activeStudents.forEach(student=> {
                       const profile = student.studentProfile || {};
                       const totalDocs = 9;
                       const submittedDocs = (profile.documents && profile.documents.length) || 0;
-                    %>
-                      <tr class="student-row" 
-                          data-course="<%= profile.personalData?.course || '' %>"
-                          data-year-section="<%= profile.personalData?.yearSection || '' %>"
-                          data-status="<%= profile.overallStatus || 'Pending' %>">
-                        <td><%= profile.personalData?.studentId || 'N/A' %></td>
-                        <td>
-                          <%= profile.personalData?.firstName || profile.personalData?.givenName || 'N/A' %>
-                          <%= profile.personalData?.lastName || profile.personalData?.surname || '' %>
+                      %>
+                      <tr class="student-row" data-course="<%= profile.personalData?.course || '' %>"
+                        data-year-section="<%= profile.personalData?.yearSection || '' %>"
+                        data-status="<%= profile.overallStatus || 'Pending' %>">
+                        <td class="fw-bold">
+                          <%= profile.personalData?.studentId || 'N/A' %>
                         </td>
-                        <td><%= profile.personalData?.course || 'N/A' %></td>
-                        <td><%= profile.personalData?.yearSection || 'N/A' %></td>
                         <td>
-                          <div class="progress">
-                            <div class="progress-bar" role="progressbar" style="width: <%= (submittedDocs/totalDocs * 100) %>%">
-                              <%= submittedDocs %>/<%= totalDocs %>
+                          <%= profile.personalData?.givenName || 'N/A' %>
+                            <%= profile.personalData?.surname || '' %>
+                        </td>
+                        <td>
+                          <%= profile.personalData?.course || 'N/A' %>
+                        </td>
+                        <td>
+                          <%= profile.personalData?.yearSection || 'N/A' %>
+                        </td>
+                        <td style="min-width: 150px;">
+                          <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1">
+                              <div class="progress-bar" role="progressbar"
+                                style="width: <%= (submittedDocs/totalDocs * 100) %>%"></div>
                             </div>
+                            <small class="text-muted">
+                              <%= submittedDocs %>/<%= totalDocs %>
+                            </small>
                           </div>
                         </td>
                         <td>
-                          <span class="badge bg-<%= 
-                            profile.overallStatus === 'Completed' ? 'success' : 
-                            profile.overallStatus === 'Pending Review' ? 'warning' : 'info' %>">
+                          <span class="badge rounded-pill bg-<%= 
+                                    profile.overallStatus === 'Completed' ? 'success' : 
+                                    profile.overallStatus === 'Pending Review' ? 'warning' : 'info' %>">
                             <%= profile.overallStatus || 'Pending' %>
                           </span>
                         </td>
-                        <td>
-                          <a href="/coordinator/student-details/<%= student._id %>" class="btn btn-primary btn-sm">
-                            <i class="bi bi-eye"></i> View Details
+                        <td class="text-end">
+                          <a href="/coordinator/student-details/<%= student._id %>"
+                            class="btn btn-outline-primary btn-compact">
+                            <i class="bi bi-eye"></i> View
                           </a>
                         </td>
                       </tr>
-                    <% }) %>
+                      <% }) %>
                   </tbody>
                 </table>
               </div>
-              <div id="noResultsMessage" class="text-center text-muted py-4" style="display: none;">
+              <div id="noResultsMessage" class="text-center text-muted py-5" style="display: none;">
+                <i class="bi bi-search display-4 mb-3 d-block"></i>
                 <p>No students match the selected filters.</p>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Applications tab -->
         <div class="tab-pane fade" id="nav-applications" role="tabpanel">
+          <h4 class="mb-4 section-title">Student application to partners</h4>
           <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-              <h4>Student Partnership Applications</h4>
               <small class="text-muted">View student internship partnership applications</small>
             </div>
             <div class="card-body">
-              <% 
-                const agenciesMap = {};
-                activeStudents.forEach(student => {
-                  const partnership = student.studentProfile?.partnership;
-                  if (partnership && partnership.agency) {
-                    const agency = partnership.agency;
-                    if (!agenciesMap[agency]) {
-                      agenciesMap[agency] = [];
-                    }
-                    agenciesMap[agency].push({
-                      student: student,
-                      profile: student.studentProfile,
-                      partnership: partnership
-                    });
-                  }
+              <% const agenciesMap={}; activeStudents.forEach(student=> {
+                const partnership = student.studentProfile?.partnership;
+                if (partnership && partnership.agency) {
+                const agency = partnership.agency;
+                if (!agenciesMap[agency]) {
+                agenciesMap[agency] = [];
+                }
+                agenciesMap[agency].push({
+                student: student,
+                profile: student.studentProfile,
+                partnership: partnership
                 });
-              %>
+                }
+                });
+                %>
 
-              <% if (Object.keys(agenciesMap).length === 0) { %>
-                <div class="text-center text-muted py-4">
-                  <i class="bi bi-inbox display-1 mb-3"></i>
-                  <p>No partnership applications yet.</p>
-                </div>
-              <% } else { %>
-                <div class="row g-4">
-                  <% Object.entries(agenciesMap).forEach(([agency, students]) => { %>
-                    <div class="col-12">
-                      <div class="card border-start border-primary border-4">
-                        <div class="card-header bg-light">
-                          <h5 class="card-title mb-0">
-                            <i class="bi bi-building me-2"></i><%= agency %>
-                            <span class="badge bg-primary float-end"><%= students.length %> student(s)</span>
-                          </h5>
-                        </div>
-                        <div class="card-body">
-                          <div class="row g-3">
-                            <% students.forEach(app => { %>
-                              <div class="col-md-6">
-                                <div class="card h-100 shadow-sm">
-                                  <div class="card-header bg-white border-0 pb-0">
-                                    <div class="d-flex align-items-center">
-                                      <img src="<%= app.profile.personalData?.profilePicture || '/images/default-avatar.png' %>" 
-                                           class="rounded-circle me-3" 
-                                           style="width: 48px; height: 48px; object-fit: cover;">
-                                      <div>
-                                        <h6 class="mb-0">
-                                          <%= app.profile.personalData?.firstName || app.profile.personalData?.givenName %>
-                                          <%= app.profile.personalData?.lastName || app.profile.personalData?.surname %>
-                                        </h6>
-                                        <small class="text-muted">
-                                          ID: <%= app.profile.personalData?.studentId %>
-                                        </small>
+                <% if (Object.keys(agenciesMap).length===0) { %>
+                  <div class="text-center text-muted py-4">
+                    <i class="bi bi-inbox display-1 mb-3"></i>
+                    <p>No partnership applications yet.</p>
+                  </div>
+                  <% } else { %>
+                    <div class="row g-4">
+                      <% Object.entries(agenciesMap).forEach(([agency, students])=> { %>
+                        <div class="col-12">
+                          <div class="card border-start border-primary border-4">
+                            <div class="card-header bg-light">
+                              <h5 class="card-title mb-0">
+                                <i class="bi bi-building me-2"></i>
+                                <%= agency %>
+                                  <span class="badge bg-primary float-end">
+                                    <%= students.length %> student(s)
+                                  </span>
+                              </h5>
+                            </div>
+                            <div class="card-body">
+                              <div class="row g-3">
+                                <% students.forEach(app=> { %>
+                                  <div class="col-md-6">
+                                    <div class="card h-100 shadow-sm">
+                                      <div class="card-header bg-white border-0 pb-0">
+                                        <div class="d-flex align-items-center">
+                                          <img
+                                            src="<%= app.profile.personalData?.profilePicture || '/images/default-avatar.png' %>"
+                                            class="rounded-circle me-3"
+                                            style="width: 48px; height: 48px; object-fit: cover;">
+                                          <div>
+                                            <h6 class="mb-0">
+                                              <%= app.profile.personalData?.firstName ||
+                                                app.profile.personalData?.givenName %>
+                                                <%= app.profile.personalData?.lastName ||
+                                                  app.profile.personalData?.surname %>
+                                            </h6>
+                                            <small class="text-muted">
+                                              ID: <%= app.profile.personalData?.studentId %>
+                                            </small>
+                                          </div>
+                                        </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                  <div class="card-body">
-                                    <div class="mb-3">
-                                      <label class="text-muted small">Internship Information</label>
-                                      <div class="bg-light p-3 rounded">
-                                        <p class="mb-2">
-                                          <strong>Agency:</strong> <%= app.partnership.agency %>
-                                        </p>
-                                        <p class="mb-2">
-                                          <strong>Location:</strong> <%= app.partnership.location %>
-                                        </p>
-                                        <% if (app.partnership.email) { %>
+                                      <div class="card-body">
+                                        <div class="mb-3">
+                                          <label class="text-muted small">Internship Information</label>
+                                          <div class="bg-light p-3 rounded">
+                                            <p class="mb-2">
+                                              <strong>Agency:</strong>
+                                              <%= app.partnership.agency %>
+                                            </p>
+                                            <p class="mb-2">
+                                              <strong>Location:</strong>
+                                              <%= app.partnership.location %>
+                                            </p>
+                                            <% if (app.partnership.email) { %>
+                                              <p class="mb-0">
+                                                <strong>Contact Email:</strong>
+                                                <a href="mailto:<%= app.partnership.email %>">
+                                                  <%= app.partnership.email %>
+                                                </a>
+                                              </p>
+                                              <% } %>
+                                          </div>
+                                        </div>
+                                        <div class="mb-3">
+                                          <label class="text-muted small">Course & Year</label>
                                           <p class="mb-0">
-                                            <strong>Contact Email:</strong> 
-                                            <a href="mailto:<%= app.partnership.email %>"><%= app.partnership.email %></a>
+                                            <%= app.profile.personalData?.course %> - <%=
+                                                app.profile.personalData?.yearSection %>
                                           </p>
-                                        <% } %>
+                                        </div>
+                                        <div class="mb-3">
+                                          <label class="text-muted small">Applied On</label>
+                                          <p class="mb-0">
+                                            <%= new Date(app.partnership.appliedAt).toLocaleDateString('en-US', {
+                                              year: 'numeric' , month: 'short' , day: 'numeric' , hour: 'numeric' ,
+                                              minute: '2-digit' }) %>
+                                          </p>
+                                        </div>
+                                        <a href="/coordinator/student-details/<%= app.student._id %>"
+                                          class="btn btn-primary btn-sm w-100">
+                                          <i class="bi bi-eye me-2"></i> View Full Profile
+                                        </a>
                                       </div>
                                     </div>
-                                    <div class="mb-3">
-                                      <label class="text-muted small">Course & Year</label>
-                                      <p class="mb-0">
-                                        <%= app.profile.personalData?.course %> - <%= app.profile.personalData?.yearSection %>
-                                      </p>
-                                    </div>
-                                    <div class="mb-3">
-                                      <label class="text-muted small">Applied On</label>
-                                      <p class="mb-0">
-                                        <%= new Date(app.partnership.appliedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %>
-                                      </p>
-                                    </div>
-                                    <a href="/coordinator/student-details/<%= app.student._id %>" class="btn btn-primary btn-sm w-100">
-                                      <i class="bi bi-eye me-2"></i> View Full Profile
-                                    </a>
                                   </div>
-                                </div>
+                                  <% }) %>
                               </div>
-                            <% }) %>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                        <% }) %>
                     </div>
-                  <% }) %>
-                </div>
-              <% } %>
+                    <% } %>
             </div>
           </div>
         </div>
+
+        <!-- Account requests tab -->
         <div class="tab-pane fade" id="nav-requests" role="tabpanel">
+          <h4 class="mb-4 section-title">Account requests</h4>
           <div class="card">
-            <div class="card-header">
-              <h4>Account Requests</h4>
-            </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table">
@@ -392,23 +493,34 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <% pendingStudents.forEach(student => { %>
+                    <% pendingStudents.forEach(student=> { %>
                       <tr>
-                        <td><%= student.studentProfile?.personalData?.studentId || 'N/A' %></td>
-                        <td><%= student.studentProfile?.personalData?.firstName %> <%= student.studentProfile?.personalData?.lastName %></td>
-                        <td><%= student.email %></td>
                         <td>
-                          <button class="btn btn-success btn-sm approve-student" data-id="<%= student._id %>">Approve</button>
-                          <button class="btn btn-danger btn-sm reject-student" data-id="<%= student._id %>">Reject</button>
+                          <%= student.studentProfile?.personalData?.studentId || 'N/A' %>
+                        </td>
+                        <td>
+                          <%= student.studentProfile?.personalData?.firstName %>
+                            <%= student.studentProfile?.personalData?.lastName %>
+                        </td>
+                        <td>
+                          <%= student.email %>
+                        </td>
+                        <td>
+                          <button class="btn btn-success btn-sm approve-student"
+                            data-id="<%= student._id %>">Approve</button>
+                          <button class="btn btn-danger btn-sm reject-student"
+                            data-id="<%= student._id %>">Reject</button>
                         </td>
                       </tr>
-                    <% }) %>
+                      <% }) %>
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Add coordinators tab -->
         <div class="tab-pane fade" id="nav-coordinators" role="tabpanel">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h4>Coordinators</h4>
@@ -431,18 +543,24 @@
                   </thead>
                   <tbody>
                     <% /* `coordinators` expected to be passed in render; if not present the table will be empty */ %>
-                    <% (coordinators || []).forEach(c => { %>
-                      <tr id="coordinator-<%= c._id %>">
-                        <td><%= c.email %></td>
-                        <td><%= c.name || '-' %></td>
-                        <td><%= c.status || 'active' %></td>
-                        <td>
-                          <button class="btn btn-sm btn-danger delete-coordinator" data-id="<%= c._id %>">
-                            <i class="bi bi-trash"></i> Delete
-                          </button>
-                        </td>
-                      </tr>
-                    <% }) %>
+                      <% (coordinators || []).forEach(c=> { %>
+                        <tr id="coordinator-<%= c._id %>">
+                          <td>
+                            <%= c.email %>
+                          </td>
+                          <td>
+                            <%= c.name || '-' %>
+                          </td>
+                          <td>
+                            <%= c.status || 'active' %>
+                          </td>
+                          <td>
+                            <button class="btn btn-sm btn-danger delete-coordinator" data-id="<%= c._id %>">
+                              <i class="bi bi-trash"></i> Delete
+                            </button>
+                          </td>
+                        </tr>
+                        <% }) %>
                   </tbody>
                 </table>
               </div>
@@ -485,24 +603,36 @@
   </div>
 </div>
 
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0 text-center">
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+          data-bs-dismiss="modal" aria-label="Close"></button>
+        <img src="" id="fullResImage" class="img-fluid rounded shadow-lg" style="max-height: 90vh;">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   document.getElementById('announcementForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     try {
-        const response = await fetch('/coordinator/announcement', {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to create announcement');
-        }
-        
-        window.location.reload();
+      const response = await fetch('/coordinator/announcement', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create announcement');
+      }
+
+      window.location.reload();
     } catch (err) {
-        alert('Error creating announcement: ' + err.message);
+      alert('Error creating announcement: ' + err.message);
     }
   });
 
@@ -516,17 +646,20 @@
   document.querySelectorAll('.delete-announcement').forEach(button => {
     button.addEventListener('click', async () => {
       if (!confirm('Are you sure you want to delete this announcement?')) return;
-      
+
       const id = button.dataset.id;
       try {
         const response = await fetch(`/coordinator/announcement/${id}`, {
           method: 'DELETE'
         });
-        
+
         if (response.ok) {
-          const card = button.closest('.announcement-card');
-          card.remove();
-          alert('Announcement deleted successfully');
+          const card = button.closest('.custom-post-card');
+          if (card) {
+            card.remove();
+          } else {
+            window.location.reload();
+          }
         } else {
           throw new Error('Failed to delete announcement');
         }
@@ -549,31 +682,31 @@
 
   document.querySelectorAll('.comment-form').forEach(form => {
     form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const input = form.querySelector('input');
-        const announcementId = form.dataset.announcement;
-        
-        if (!input.value.trim()) return;
+      e.preventDefault();
+      const input = form.querySelector('input');
+      const announcementId = form.dataset.announcement;
 
-        try {
-            const response = await fetch(`/coordinator/announcement/${announcementId}/comment`, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ content: input.value.trim() })
-            });
-            
-            if (!response.ok) {
-                const err = await response.json().catch(()=>({ error: 'Failed to post comment' }));
-                throw new Error(err.error || 'Failed to post comment');
-            }
+      if (!input.value.trim()) return;
 
-            const comment = await response.json();
-            const createdAtText = comment.createdAtShort || formatShortTime(comment.createdAt);
+      try {
+        const response = await fetch(`/coordinator/announcement/${announcementId}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ content: input.value.trim() })
+        });
 
-            const commentsList = form.nextElementSibling;
-            const commentHtml = `
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({ error: 'Failed to post comment' }));
+          throw new Error(err.error || 'Failed to post comment');
+        }
+
+        const comment = await response.json();
+        const createdAtText = comment.createdAtShort || formatShortTime(comment.createdAt);
+
+        const commentsList = form.nextElementSibling;
+        const commentHtml = `
                 <div class="d-flex gap-2 mb-2">
                     <img src="${(comment.author && comment.author.profilePicture) || '/images/default-avatar.png'}"
                          class="rounded-circle" style="width:32px;height:32px;object-fit:cover;">
@@ -584,15 +717,15 @@
                     </div>
                 </div>
             `;
-            commentsList.insertAdjacentHTML('afterbegin', commentHtml);
-            const commentBtn = form.closest('.card-body').querySelector('.comment-btn');
-            const currentCount = parseInt(commentBtn.textContent.match(/\d+/)[0]);
-            commentBtn.innerHTML = `<i class="bi bi-chat"></i> Comments (${currentCount + 1})`;
+        commentsList.insertAdjacentHTML('afterbegin', commentHtml);
+        const commentBtn = form.closest('.card-body').querySelector('.comment-btn');
+        const currentCount = parseInt(commentBtn.textContent.match(/\d+/)[0]);
+        commentBtn.innerHTML = `<i class="bi bi-chat"></i> Comments (${currentCount + 1})`;
 
-            input.value = '';
-        } catch (err) {
-            alert('Error posting comment: ' + err.message);
-        }
+        input.value = '';
+      } catch (err) {
+        alert('Error posting comment: ' + err.message);
+      }
     });
   });
   document.getElementById('addCoordinatorForm')?.addEventListener('submit', async (e) => {
@@ -663,13 +796,13 @@
       }
     });
   });
-  document.getElementById('announcementImage')?.addEventListener('change', function(e) {
+  document.getElementById('announcementImage')?.addEventListener('change', function (e) {
     const preview = document.getElementById('imagePreview');
     const img = preview.querySelector('img');
-    
+
     if (this.files && this.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         img.src = e.target.result;
         preview.style.display = 'block';
       }
@@ -716,7 +849,7 @@
     const courseFilter = document.getElementById('courseFilter').value;
     const yearSectionFilter = document.getElementById('yearSectionFilter').value;
     const statusFilter = document.getElementById('statusFilter').value;
-    
+
     const rows = document.querySelectorAll('#reviewSubmissionsTable tbody tr.student-row');
     let visibleCount = 0;
 
@@ -744,4 +877,8 @@
   document.getElementById('courseFilter').addEventListener('change', applyFilters);
   document.getElementById('yearSectionFilter').addEventListener('change', applyFilters);
   document.getElementById('statusFilter').addEventListener('change', applyFilters);
+
+  function prepareModal(imageSrc) {
+    document.getElementById('fullResImage').src = imageSrc;
+  }
 </script>

@@ -1,48 +1,105 @@
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Director Dashboard</h2>
+<link href="/css/style-nav.css" rel="stylesheet">
+<link href="/css/style-coordinator-dash.css" rel="stylesheet">
+
+<div class="main-container d-flex">
+  <div class="sidebar bg-light border-end"
+    style="width: 280px; height: 100vh; position: fixed; top: 0; left: 0; overflow-y: auto;">
+    <div class="p-3 pb-0 text-center mb-4">
+      <div class="mb-3 logogogo">
+        <img src="/images/logo-placeholder.png" alt="Logo" class="mx-auto d-block" style="width: 200px; height: auto;">
+      </div>
+
+      <div class="user-card">
+        <img src="/images/profile-placeholder.png" class="rounded-circle mb-2 mx-auto d-block"
+          style="width: 80px; height: 80px; object-fit: cover;">
+        <div><strong>
+            <%= user.name || user.email %>
+          </strong></div>
+        <small class="text-muted">Director</small>
+
+        <div class="account-btns">
+          <div class="mt-2">
+            <a href="/coordinator/edit-profile" class="btn btn-outline-primary edit-btn">
+              <img src="/images/icons/edit-blue.svg" alt="Edit" style="width: 14px; height: auto;">
+              <span>Edit</span>
+            </a>
+          </div>
+          <div class="mt-2">
+            <a href="#" onclick="handleLogout(event)" class="btn btn-outline-primary edit-btn">
+              <img src="/images/icons/door-icon.svg" alt="Edit" style="width: 14px; height: auto;">
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="nav flex-column nav-pills p-3 pt-0" id="coordinatorSidebar" role="tablist" aria-orientation="vertical">
+
+      <a class="nav-link active d-flex align-items-center" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home"
+        role="tab">
+        <img src="/images/icons/home-icon.svg" alt="Home" style="width: 20px; height: auto;" class="me-3">
+        <span>Home</span>
+      </a>
+
+    </div>
+
   </div>
 
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Profiles Pending Director Review</h5>
+  <div class="flex-grow-1" style="margin-left: 280px; padding: 2rem;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="mb-4 section-title">Director Dashboard</h4>
     </div>
-    <div class="card-body">
-      <% if (profiles && profiles.length) { %>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Student ID</th>
-                <th>Name</th>
-                <th>Course</th>
-                <th>Overall Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% profiles.forEach(p => { %>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Profiles Pending Director Review</h5>
+      </div>
+      <div class="card-body">
+        <% if (profiles && profiles.length) { %>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
                 <tr>
-                  <td><%= p.personalData?.studentId || 'N/A' %></td>
-                  <td>
-                    <%= p.personalData?.givenName || p.personalData?.firstName %>
-                    <%= p.personalData?.surname || p.personalData?.lastName %>
-                  </td>
-                  <td><%= p.personalData?.course || 'N/A' %></td>
-                  <td><span class="badge bg-warning text-dark"><%= p.overallStatus || 'Pending' %></span></td>
-                  <td>
-                    <a href="/director/student-view/<%= p._id %>" class="btn btn-sm btn-primary">View</a>
-                  </td>
+                  <th>Student ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Overall Status</th>
+                  <th>Actions</th>
                 </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        </div>
-      <% } else { %>
-        <div class="text-center text-muted py-4">
-          No profiles awaiting director review.
-        </div>
-      <% } %>
+              </thead>
+              <tbody>
+                <% profiles.forEach(p=> { %>
+                  <tr>
+                    <td>
+                      <%= p.personalData?.studentId || 'N/A' %>
+                    </td>
+                    <td>
+                      <%= p.personalData?.givenName || p.personalData?.firstName %>
+                        <%= p.personalData?.surname || p.personalData?.lastName %>
+                    </td>
+                    <td>
+                      <%= p.personalData?.course || 'N/A' %>
+                    </td>
+                    <td><span class="badge bg-warning text-dark">
+                        <%= p.overallStatus || 'Pending' %>
+                      </span></td>
+                    <td>
+                      <a href="/director/student-view/<%= p._id %>" class="btn btn-sm btn-primary">View</a>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <% } else { %>
+            <div class="text-center text-muted py-4">
+              No profiles awaiting director review.
+            </div>
+            <% } %>
+      </div>
     </div>
+
   </div>
-</div>

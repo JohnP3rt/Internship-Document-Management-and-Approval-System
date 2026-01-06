@@ -1,0 +1,32 @@
+.custom-rounded-card {
+  background-color: #f0f5fa !important;
+  border: 1px solid #d1d9e0 !important;
+  border-radius: 1rem !important;
+  overflow: hidden;
+}
+
+.form-control,
+.form-select {
+  border-color: #d1d9e0;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.1);
+}
+
+.shadow-xs {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.section-title {
+  letter-spacing: -0.02em;
+}
+
+.main-container {
+  font-family: Inter;
+  margin: 2rem;
+}
