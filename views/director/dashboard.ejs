@@ -88,7 +88,7 @@
               <i class="bi bi-funnel me-2"></i>Filter Results
             </h6>
             <div class="row g-3">
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted">Filter by Course</label>
                 <select class="form-select form-select-lg border-0 bg-light rounded-3" id="courseFilter">
                   <option value="">All Courses</option>
@@ -101,7 +101,7 @@
                 </select>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted">Filter by Year & Section</label>
                 <select class="form-select form-select-lg border-0 bg-light rounded-3" id="yearSectionFilter">
                   <option value="">All Year & Section</option>
@@ -114,7 +114,20 @@
                 </select>
               </div>
 
-              <div class="col-md-4">
+              <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted">Filter by Campus</label>
+                <select class="form-select form-select-lg border-0 bg-light rounded-3" id="campusFilter">
+                  <option value="">All Campus</option>
+                  <% const campuses=[...new Set(profiles?.map(p=> p.personalData?.campus).filter(Boolean) || [])];
+                    campuses.forEach(campus => { %>
+                  <option value="<%= campus %>">
+                    <%= campus %>
+                  </option>
+                  <% }); %>
+                </select>
+              </div>
+
+              <div class="col-md-3">
                 <label class="form-label fw-bold small text-muted">Filter by Company</label>
                 <select class="form-select form-select-lg border-0 bg-light rounded-3" id="companyFilter">
                   <option value="">All Companies</option>
@@ -156,6 +169,7 @@
                 <tr>
                   <th class="ps-4 text-muted fw-bold small">Course</th>
                   <th class="text-muted fw-bold small">Year & Section</th>
+                  <th class="text-muted fw-bold small">Campus</th>
                   <th class="text-muted fw-bold small">Company</th>
                   <th class="text-muted fw-bold small">Overall Status</th>
                   <th class="text-end pe-4 text-muted fw-bold small">Actions</th>
@@ -166,6 +180,7 @@
                 <tr class="profile-row"
                   data-course="<%= p.personalData?.course || '' %>"
                   data-year-section="<%= p.personalData?.yearSection || '' %>"
+                  data-campus="<%= p.personalData?.campus || '' %>"
                   data-company="<%= p.partnership?.agency || '' %>">
                   <td class="ps-4">
                     <div class="d-flex align-items-center">
@@ -182,6 +197,11 @@
                   <td>
                     <span class="fw-bold text-dark">
                       <%= p.personalData?.yearSection || 'N/A' %>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="fw-bold text-dark">
+                      <%= p.personalData?.campus || 'N/A' %>
                     </span>
                   </td>
                   <td>
@@ -247,6 +267,7 @@
   // Filtering functionality
   const courseFilter = document.getElementById('courseFilter');
   const yearSectionFilter = document.getElementById('yearSectionFilter');
+  const campusFilter = document.getElementById('campusFilter');
   const companyFilter = document.getElementById('companyFilter');
   const resetBtn = document.getElementById('resetFilters');
   const profileTable = document.getElementById('profilesTable');
@@ -256,6 +277,7 @@
   function applyFilters() {
     const courseValue = courseFilter?.value || '';
     const yearSectionValue = yearSectionFilter?.value || '';
+    const campusValue = campusFilter?.value || '';
     const companyValue = companyFilter?.value || '';
 
     const rows = profileTable?.querySelectorAll('tbody tr.profile-row') || [];
@@ -264,13 +286,15 @@
     rows.forEach(row => {
       const rowCourse = row.dataset.course;
       const rowYearSection = row.dataset.yearSection;
+      const rowCampus = row.dataset.campus;
       const rowCompany = row.dataset.company;
 
       const courseMatch = !courseValue || rowCourse === courseValue;
       const yearSectionMatch = !yearSectionValue || rowYearSection === yearSectionValue;
+      const campusMatch = !campusValue || rowCampus === campusValue;
       const companyMatch = !companyValue || rowCompany === companyValue;
 
-      if (courseMatch && yearSectionMatch && companyMatch) {
+      if (courseMatch && yearSectionMatch && campusMatch && companyMatch) {
         row.style.display = '';
         visibleCount++;
       } else {
@@ -297,6 +321,7 @@
   function resetAllFilters() {
     if (courseFilter) courseFilter.value = '';
     if (yearSectionFilter) yearSectionFilter.value = '';
+    if (campusFilter) campusFilter.value = '';
     if (companyFilter) companyFilter.value = '';
     applyFilters();
   }
@@ -304,6 +329,7 @@
   // Event listeners
   courseFilter?.addEventListener('change', applyFilters);
   yearSectionFilter?.addEventListener('change', applyFilters);
+  campusFilter?.addEventListener('change', applyFilters);
   companyFilter?.addEventListener('change', applyFilters);
   resetBtn?.addEventListener('click', resetAllFilters);
 

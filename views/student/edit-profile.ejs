@@ -95,8 +95,19 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label small fw-bold text-muted">Year & Section</label>
-                                <input type="text" name="yearSection" class="form-control rounded-3"
-                                    value="<%= profile.personalData.yearSection %>" required>
+                                <input type="text" name="yearSection" class="form-control" 
+                                    value="<%= profile.personalData.yearSection || '' %>" placeholder="e.g., 4th Year - A">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Campus</label>
+                                <select name="campus" class="form-select rounded-3">
+                                    <option value="">Select Campus</option>
+                                    <option value="Urdaneta" <%= profile.personalData.campus === 'Urdaneta' ? 'selected' : '' %>>Urdaneta</option>
+                                    <option value="Lingayen" <%= profile.personalData.campus === 'Lingayen' ? 'selected' : '' %>>Lingayen</option>
+                                    <option value="Asingan" <%= profile.personalData.campus === 'Asingan' ? 'selected' : '' %>>Asingan</option>
+                                    <option value="Santa Maria" <%= profile.personalData.campus === 'Santa Maria' ? 'selected' : '' %>>Santa Maria</option>
+                                    <option value="San Carlos" <%= profile.personalData.campus === 'San Carlos' ? 'selected' : '' %>>San Carlos</option>
+                                </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Contact Number</label>

@@ -27,6 +27,7 @@ const StudentProfileSchema = new Schema({
     course: String,
     major: String,
     yearSection: String,
+    campus: String,
     contactNumber: String,
     guardianName: String,
     homeAddress: String,

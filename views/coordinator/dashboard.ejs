@@ -38,36 +38,38 @@
     <div class="nav flex-column nav-pills p-3 pt-0" id="coordinatorSidebar" role="tablist" aria-orientation="vertical">
       <a class="nav-link active" id="nav-home-tab" data-bs-toggle="pill" href="#nav-home" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/home-icon.svg" alt="Home" style="width: 150px; height: auto;">
+        <img src="/images/icons/home-icon.svg" alt="Logo" style="width: 150px; height: auto;">
         <p>Home</p>
       </a>
       <a class="nav-link" id="nav-review-tab" data-bs-toggle="pill" href="#nav-review" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/documents-icon.svg" alt="Documents" style="width: 150px; height: auto;">
+        <img src="/images/icons/documents-icon.svg" alt="Logo" style="width: 150px; height: auto;">
         <p>Review submissions</p>
       </a>
       <a class="nav-link" id="nav-applications-tab" data-bs-toggle="pill" href="#nav-applications" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/megaphone-icon.svg" alt="Applications" style="width: 150px; height: auto;">
+        <img src="/images/icons/megaphone-icon.svg" alt="Logo" style="width: 150px; height: auto;">
         <p>Applications</p>
-      </a>
-      <a class="nav-link" id="nav-reports-tab" data-bs-toggle="pill" href="#nav-reports" role="tab"
-        style="width: 100%; text-align: center;">
-        <img src="/images/icons/reports-icon.svg" alt="Reports" style="width: 150px; height: auto;">
-        <p>Reports</p>
       </a>
       <a class="nav-link" id="nav-requests-tab" data-bs-toggle="pill" href="#nav-requests" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/confirm-people.svg" alt="Requests" style="width: 150px; height: auto;">
+        <img src="/images/icons/confirm-people.svg" alt="Logo" style="width: 150px; height: auto;">
         <p>Account requests</p>
       </a>
       <a class="nav-link" id="nav-coordinators-tab" data-bs-toggle="pill" href="#nav-coordinators" role="tab"
         style="width: 100%; text-align: center;">
-        <img src="/images/icons/add-people.svg" alt="Coordinators" style="width: 150px; height: auto;">
+        <img src="/images/icons/add-people.svg" alt="Logo" style="width: 150px; height: auto;">
         <p>Add coordinators</p>
       </a>
+      <a class="nav-link" id="nav-reports-tab" data-bs-toggle="pill" href="#nav-reports" role="tab"
+        style="width: 100%; text-align: center;">
+        <img src="/images/icons/reports-icon.svg" alt="Logo" style="width: 150px; height: auto;">
+        <p>Reports</p>
+      </a>
     </div>
+
   </div>
+
   <div class="main-content" style="margin-left: 280px; width: calc(100% - 280px); min-height: 100vh;">
     <div class="container py-4">
       <div class="tab-content">
@@ -744,7 +746,7 @@
                   });
                   const overallDonePercent = overallStudents > 0 ? Math.round((overallDone / overallStudents) * 100) : 0;
                   const overallSubmittedPercent = overallStudents > 0 ? Math.round((overallSubmitted / overallStudents) * 100) : 0;
-                  const pendingPercent = 100 - overallDonePercent - overallSubmittedPercent;
+                  const overallPendingPercent = 100 - overallDonePercent - overallSubmittedPercent;
                 %>
                 <div class="col-md-6">
                   <div class="text-center">
@@ -775,7 +777,7 @@
                         <h6 class="mb-1 fw-bold">Pending</h6>
                         <small class="text-muted">Awaiting submission</small>
                       </div>
-                      <span class="badge bg-secondary rounded-pill"><%= pendingPercent %>%</span>
+                      <span class="badge bg-secondary rounded-pill"><%= overallPendingPercent %>%</span>
                     </div>
                   </div>
                 </div>
