@@ -165,4 +165,18 @@ router.delete('/document-comment/:docId/:commentIndex', auth('director'), async 
   }
 });
 
+const ChatbotService = require('../services/chatbotService');
+
+router.post('/chatbot', auth('director'), async (req, res) => {
+  try {
+    const { message } = req.body;
+    const reply = await ChatbotService.getReply(message || '', 'director');
+    res.json({ response: reply });
+  } catch (err) {
+    console.error('Director chatbot route catch:', err);
+    const fallback = ChatbotService.getLocalFallbackReply(req.body?.message || '', 'director');
+    res.json({ response: fallback });
+  }
+});
+
 module.exports = router;

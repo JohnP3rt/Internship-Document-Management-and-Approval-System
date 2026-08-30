@@ -6,6 +6,7 @@ const auth = require('../middleware/auth');
 const path = require('path');
 const fs = require('fs');
 const { profileUpload, announcementUpload, getUploadedFileUrl } = require('../utils/storage');
+const ChatbotService = require('../services/chatbotService');
 
 router.post('/create-coordinator', auth('coordinator'), async (req, res) => {
     const { email, password, name, campus } = req.body;
@@ -307,20 +308,44 @@ router.post('/announcement', auth('coordinator'), (req, res) => {
     announcementUpload(req, res, async (err) => {
         try {
             if (err) {
-                return res.status(400).json({ error: err.message });
+                console.error('Announcement multer/upload error:', err);
+                return res.status(400).json({ error: `400 Bad Request (File Upload): ${err.message}` });
             }
 
-            const announcement = new Announcement({
-                title: req.body.title,
-                content: req.body.content,
+            const title = req.body.title ? req.body.title.trim() : '';
+            const content = req.body.content ? req.body.content.trim() : '';
+
+            if (!title || !content) {
+                return res.status(400).json({ error: '400 Bad Request (Validation): Announcement title and content are required.' });
+            }
+
+            // Duplicate request prevention: Check for duplicate announcement created within the last 5 seconds
+            const recentDuplicate = await Announcement.findOne({
                 author: req.user._id,
-                imageUrl: req.file ? getUploadedFileUrl(req.file, 'announcement') : undefined
+                title: title,
+                content: content,
+                createdAt: { $gte: new Date(Date.now() - 5000) }
+            });
+
+            if (recentDuplicate) {
+                return res.json(recentDuplicate);
+            }
+
+            const imageUrl = req.file ? getUploadedFileUrl(req.file, 'announcement') : undefined;
+
+            const announcement = new Announcement({
+                title,
+                content,
+                author: req.user._id,
+                imageUrl
             });
 
             await announcement.save();
+            console.log('✓ Announcement created successfully:', announcement._id, 'Image:', imageUrl || 'None');
             res.json(announcement);
         } catch (err) {
-            res.status(500).json({ error: err.message });
+            console.error('Announcement creation database/server error:', err);
+            res.status(500).json({ error: `500 Server Error: ${err.message || 'Error creating announcement'}` });
         }
     });
 });
@@ -523,6 +548,18 @@ router.delete('/document-comment/:docId/:commentIndex', auth('coordinator'), asy
     } catch (err) {
         console.error('Delete comment error:', err);
         res.status(500).json({ error: 'Failed to delete comment' });
+    }
+});
+
+router.post('/chatbot', auth('coordinator'), async (req, res) => {
+    try {
+        const { message } = req.body;
+        const reply = await ChatbotService.getReply(message || '', 'coordinator');
+        res.json({ response: reply });
+    } catch (err) {
+        console.error('Coordinator chatbot route catch:', err);
+        const fallback = ChatbotService.getLocalFallbackReply(req.body?.message || '', 'coordinator');
+        res.json({ response: fallback });
     }
 });
 
